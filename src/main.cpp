@@ -28,7 +28,8 @@ int main()
   char string[MEM_SIZE];
 
   FILE *fp;
-  char fileName[] = "C:/dev/cpp/hello.cl";
+  // char fileName[] = "C:/dev/cpp/hello.cl";
+  char fileName[] = "./hello.cl";
   char *source_str;
   size_t source_size;
 
