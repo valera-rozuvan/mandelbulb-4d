@@ -3,6 +3,7 @@ cmake_minimum_required (VERSION 3.0)
 project (Simple_window)
 
 find_package(OpenGL REQUIRED)
+find_package(OpenCL REQUIRED)
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
 	message( FATAL_ERROR "Please select another Build Directory ! (and give it a clever name, like bin_Visual2012_64bits/)" )
@@ -28,6 +29,7 @@ set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw
 	GLEW_1130
+	OpenCL::OpenCL
 )
 
 add_definitions(
