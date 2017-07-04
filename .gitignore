@@ -30,3 +30,6 @@
 
 # Build directory
 build/
+
+# Build executables
+src2/simple_window/simple_window
