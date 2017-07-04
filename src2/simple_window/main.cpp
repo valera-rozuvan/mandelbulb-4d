@@ -16,6 +16,8 @@
 #include <GL/glew.h>
 #include <glfw3.h>
 
+#include <stdbool.h>
+
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
 #define NK_INCLUDE_STANDARD_VARARGS
@@ -240,6 +242,8 @@ int main(void)
     /*set_style(ctx, THEME_BLUE);*/
     /*set_style(ctx, THEME_DARK);*/
 
+    bool show_text = false;
+
     background = nk_rgb(28,48,62);
     while (!glfwWindowShouldClose(win))
     {
@@ -278,6 +282,28 @@ int main(void)
                 background.b = (nk_byte)nk_propertyi(ctx, "#B:", 0, background.b, 255, 1,1);
                 background.a = (nk_byte)nk_propertyi(ctx, "#A:", 0, background.a, 255, 1,1);
                 nk_combo_end(ctx);
+            }
+        }
+        nk_end(ctx);
+
+        if (nk_begin(ctx, "Nuklear", nk_rect(WINDOW_WIDTH/2 - 110, WINDOW_HEIGHT/2 - 110, 220, 220),
+                     NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE))
+        {
+            // Widgets code here
+            nk_layout_row_dynamic(ctx, 20, 1);
+
+            if (show_text == true) {
+                nk_label(ctx, "Hello, world!", NK_TEXT_LEFT);
+            } else {
+                nk_label(ctx, "", NK_TEXT_LEFT);
+            }
+
+            if (nk_button_label(ctx, "Clear")) {
+                show_text = false;
+            }
+
+            if (nk_button_label(ctx, "Hello, world!")) {
+                show_text = true;
             }
         }
         nk_end(ctx);
