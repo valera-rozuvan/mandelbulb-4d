@@ -80,9 +80,9 @@ int test_opencl()
   // char fileName[] = "C:/dev/cpp/hello.cl";
   char fileName[] = "hello.cl";
 
-  #ifdef _WIN32
+  #if defined(_WIN32) || defined(WIN32)
   char pathSeparator[] = "\\";
-  #elif
+  #elif defined(__unix__) || defined(linux) || defined(__APPLE__)
   char pathSeparator[] = "/";
   #endif
 
