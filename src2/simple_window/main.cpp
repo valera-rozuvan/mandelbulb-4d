@@ -125,11 +125,12 @@ int test_opencl()
   command_queue = clCreateCommandQueue(context, device_id, 0, &ret);
 
   /* Create Memory Buffer */
-  memobj = clCreateBuffer(context, CL_MEM_READ_WRITE,MEM_SIZE * sizeof(char), NULL, &ret);
+  memobj = clCreateBuffer(context, CL_MEM_READ_WRITE, MEM_SIZE * sizeof(char), NULL, &ret);
 
   /* Create Kernel Program from the source */
-  program = clCreateProgramWithSource(context, 1, (const char **)&source_str,
-  (const size_t *)&source_size, &ret);
+  program = clCreateProgramWithSource(
+    context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret
+  );
 
   /* Build Kernel Program */
   ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
@@ -144,8 +145,9 @@ int test_opencl()
   ret = clEnqueueTask(command_queue, kernel, 0, NULL,NULL);
 
   /* Copy results from the memory buffer */
-  ret = clEnqueueReadBuffer(command_queue, memobj, CL_TRUE, 0,
-  MEM_SIZE * sizeof(char),string, 0, NULL, NULL);
+  ret = clEnqueueReadBuffer(
+    command_queue, memobj, CL_TRUE, 0, MEM_SIZE * sizeof(char), string, 0, NULL, NULL
+  );
 
   /* Display Result */
   puts(string);
@@ -244,6 +246,9 @@ int main(void)
 
     bool show_text = false;
 
+    struct nk_command_buffer *canvas;
+    const struct nk_color grid_color = nk_rgb(255, 255, 255);
+
     background = nk_rgb(28,48,62);
     while (!glfwWindowShouldClose(win))
     {
@@ -305,6 +310,9 @@ int main(void)
             if (nk_button_label(ctx, "Hello, world!")) {
                 show_text = true;
             }
+
+            canvas = nk_window_get_canvas(ctx);
+            nk_stroke_line(canvas, 10, 10, 30, 30, 1.0f, grid_color);
         }
         nk_end(ctx);
 
