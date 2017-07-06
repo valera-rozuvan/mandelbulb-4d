@@ -21,6 +21,8 @@ On Linux:
   cmake ../src2
   make -j 4
 
+  cp ../src/hello.cl .
+
   ./simple_window
 ```
 
