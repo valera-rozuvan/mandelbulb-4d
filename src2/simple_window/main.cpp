@@ -29,6 +29,7 @@
 #define NK_GLFW_GL3_IMPLEMENTATION
 #include "nuklear.h"
 #include "nuklear_glfw_gl3.h"
+#include "drawing.cpp"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
@@ -246,9 +247,6 @@ int main(void)
 
     bool show_text = false;
 
-    struct nk_command_buffer *canvas;
-    const struct nk_color grid_color = nk_rgb(255, 255, 255);
-
     background = nk_rgb(28,48,62);
     while (!glfwWindowShouldClose(win))
     {
@@ -294,6 +292,8 @@ int main(void)
         if (nk_begin(ctx, "Nuklear", nk_rect(WINDOW_WIDTH/2 - 110, WINDOW_HEIGHT/2 - 110, 220, 220),
                      NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE))
         {
+            draw_line(ctx);
+
             // Widgets code here
             nk_layout_row_dynamic(ctx, 20, 1);
 
@@ -310,9 +310,6 @@ int main(void)
             if (nk_button_label(ctx, "Hello, world!")) {
                 show_text = true;
             }
-
-            canvas = nk_window_get_canvas(ctx);
-            nk_stroke_line(canvas, 10, 10, 30, 30, 1.0f, grid_color);
         }
         nk_end(ctx);
 
