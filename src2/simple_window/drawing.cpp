@@ -1,23 +1,23 @@
-struct nk_command_buffer *canvas;
-const struct nk_color grid_color = nk_rgba(255, 255, 255, 255);
-struct nk_vec2 upperCoord;
-
-const unsigned int WIDTH_IMG = 80;
-const unsigned int HEIGHT_IMG = 80;
-
-unsigned char imageData[WIDTH_IMG * HEIGHT_IMG * 4];
-
-struct nk_image myImage;
-struct nk_rect total_space;
-
-void draw_line(struct nk_context* ctx, unsigned int texture)
+void draw_line(
+  struct nk_context* ctx,
+  unsigned int texture
+)
 {
+  struct nk_command_buffer *canvas;
+  const struct nk_color grid_color = nk_rgba(255, 255, 255, 255);
+  const struct nk_color line_color = nk_rgba(123, 44, 189, 255);
+  struct nk_vec2 upperCoord;
+
+  const unsigned int WIDTH_IMG = 120;
+  const unsigned int HEIGHT_IMG = 120;
+
+  unsigned char imageData[WIDTH_IMG * HEIGHT_IMG * 4];
+
+  struct nk_image myImage;
+  struct nk_rect total_space;
+
   canvas = nk_window_get_canvas(ctx);
   total_space = nk_window_get_content_region(ctx);
-
-  // Draw simple line.
-  upperCoord = nk_window_get_content_region_min(ctx);
-  nk_stroke_line(canvas, upperCoord.x + 0, upperCoord.y + 0, upperCoord.x + 10, upperCoord.y + 10, 1.0f, grid_color);
 
   // Create an image. For now all pixels are the same.
   int i = 0;
@@ -56,4 +56,9 @@ void draw_line(struct nk_context* ctx, unsigned int texture)
   // render texture inside current nuklear window
   myImage = nk_image_id((int)texture);
   nk_draw_image(canvas, total_space, &myImage, grid_color);
+
+
+  // Draw simple line.
+  upperCoord = nk_window_get_content_region_min(ctx);
+  nk_stroke_line(canvas, upperCoord.x + 0, upperCoord.y + 0, upperCoord.x + 100, upperCoord.y + 100, 1.0f, line_color);
 }
