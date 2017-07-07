@@ -30,6 +30,7 @@
 #include "nuklear_glfw_gl3.h"
 #include "drawing.cpp"
 #include "drawing2.cpp"
+#include "threads_test.cpp"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
@@ -260,6 +261,7 @@ static void error_callback(int e, const char *d)
 
 int main(void)
 {
+    runThreads();
     test_opencl();
     generateMandel(21);
 
