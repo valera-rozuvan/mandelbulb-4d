@@ -289,10 +289,14 @@ int main(void)
         }
         nk_end(ctx);
 
+        // creating a texture
+        unsigned int texture;
+        glGenTextures(1, &texture);
+
         if (nk_begin(ctx, "Nuklear", nk_rect(WINDOW_WIDTH/2 - 110, WINDOW_HEIGHT/2 - 110, 220, 220),
                      NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE))
         {
-            draw_line(ctx);
+            draw_line(ctx, texture);
 
             // Widgets code here
             nk_layout_row_dynamic(ctx, 20, 1);
@@ -320,19 +324,25 @@ int main(void)
         /* ----------------------------------------- */
 
         /* Draw */
-        {float bg[4];
-        nk_color_fv(bg, background);
-        glfwGetWindowSize(win, &width, &height);
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(bg[0], bg[1], bg[2], bg[3]);
-        /* IMPORTANT: `nk_glfw_render` modifies some global OpenGL state
-         * with blending, scissor, face culling, depth test and viewport and
-         * defaults everything back into a default state.
-         * Make sure to either a.) save and restore or b.) reset your own state after
-         * rendering the UI. */
-        nk_glfw3_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER);
-        glfwSwapBuffers(win);}
+        {
+          float bg[4];
+          nk_color_fv(bg, background);
+          glfwGetWindowSize(win, &width, &height);
+          glViewport(0, 0, width, height);
+          glClear(GL_COLOR_BUFFER_BIT);
+          glClearColor(bg[0], bg[1], bg[2], bg[3]);
+          /* IMPORTANT: `nk_glfw_render` modifies some global OpenGL state
+           * with blending, scissor, face culling, depth test and viewport and
+           * defaults everything back into a default state.
+           * Make sure to either a.) save and restore or b.) reset your own state after
+           * rendering the UI.
+           */
+          nk_glfw3_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER);
+          glfwSwapBuffers(win);
+        }
+
+        // delete texture
+        glDeleteTextures(1, &texture);
     }
     nk_glfw3_shutdown();
     glfwTerminate();
