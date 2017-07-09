@@ -1,5 +1,3 @@
-/* nuklear - 1.32.0 - public domain */
-
 #include <iostream>
 #include <unistd.h>
 #include <stdio.h>
@@ -60,8 +58,12 @@ static void error_callback(int e, const char *d)
 int main(void)
 {
   test64bit();
+  test64bit_freeMem();
+
   runThreads();
+
   test_opencl();
+
   generateMandel(21, arrayMandel, wMandel, hMandel);
 
   /* Platform */
@@ -117,7 +119,7 @@ int main(void)
 
     /* GUI */
     if (nk_begin(
-      ctx, "Demo", nk_rect(50, 50, 230, 250),
+      ctx, "Test 1", nk_rect(50, 50, 230, 250),
       NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE
     ))
     {
@@ -166,7 +168,7 @@ int main(void)
     glGenTextures(1, &texture);
 
     if (nk_begin(
-      ctx, "Nuklear", nk_rect(WINDOW_WIDTH/2 - 110 - 300, WINDOW_HEIGHT/2 - 110 - 50, 230, 230),
+      ctx, "Test 2", nk_rect(WINDOW_WIDTH/2 - 110 - 300, WINDOW_HEIGHT/2 - 110 - 50, 230, 230),
       NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_CLOSABLE
     ))
     {
@@ -195,7 +197,7 @@ int main(void)
     glGenTextures(1, &texture2);
 
     if (nk_begin(
-      ctx, "Mandelbulb", nk_rect(WINDOW_WIDTH/2 - 110, WINDOW_HEIGHT/2 - 110, 420, 420),
+      ctx, "Mandelbulb cross section", nk_rect(WINDOW_WIDTH/2 - 110, WINDOW_HEIGHT/2 - 110, 420, 420),
       NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_CLOSABLE
     ))
     {
@@ -235,7 +237,6 @@ int main(void)
 
   nk_glfw3_shutdown();
   glfwTerminate();
-  test64bit_freeMem();
 
   return 0;
 }
