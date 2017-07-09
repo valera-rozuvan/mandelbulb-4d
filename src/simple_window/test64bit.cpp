@@ -63,7 +63,7 @@ void test64bit(void)
   for (uint64_t counter = 0; counter < numLoops; counter += 1) {
     i2 = -100;
 
-    while (i2 < 0 || i2 >= ARRAY_SIZE_6GB) {
+    while (i2 < 0 || i2 >= (int64_t)ARRAY_SIZE_6GB) {
       i1 = unsigned_uniform_random(1, ARRAY_SIZE_6GB);
       i2 = ARRAY_SIZE_6GB - i1;
     }
