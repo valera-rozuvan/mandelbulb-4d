@@ -50,6 +50,8 @@ include_directories(
 
   external/nuklear-1.40.0/
 
+  external/rand48/
+
   .
 
 )
