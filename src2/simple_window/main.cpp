@@ -1,5 +1,7 @@
 /* nuklear - 1.32.0 - public domain */
 
+#include <iostream>
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -236,6 +238,81 @@ void generateMandel(int layer) {
 
 }
 
+uint64_t mcg64(void)
+{
+    static uint64_t i = 1;
+    return (i = (164603309694725029ull * i) % 14738995463583502973ull);
+}
+
+/*
+bool is_power_of_2(uint64_t x) {
+  return x == (x & -x);
+}
+*/
+
+bool isPowerOfTwo(uint64_t x)
+{
+  return ((x != 0) && ((x & (~x + 1)) == x));
+}
+
+uint64_t urand64(void) {
+  uint64_t hi = lrand48();
+  uint64_t md = lrand48();
+  uint64_t lo = lrand48();
+  return (hi << 42) + (md << 21) + lo;
+}
+
+uint64_t unsigned_uniform_random(uint64_t low, uint64_t high) {
+  static const uint64_t M = ~(uint64_t)0;
+  uint64_t range = high - low;
+  uint64_t to_exclude = isPowerOfTwo(range) ? 0
+                                             : M % range + 1;
+  uint64_t res;
+  // Eliminate `to_exclude` possible values from consideration.
+  while ((res = urand64()) < to_exclude) {}
+  return low + res % range;
+}
+
+unsigned char *block = NULL;
+
+void test64bit()
+{
+  const int64_t ARRAY_SIZE_6GB = 1024LL * 1024LL * 1024LL * 6;
+
+  int64_t numLoops = 0;
+  int64_t counter = 0;
+
+  srand48(time(NULL));
+
+  int64_t i1 = 0x0000444400004443LL;
+  int64_t i2 = -100;
+
+  block = (unsigned char *)calloc(sizeof(unsigned char) * ARRAY_SIZE_6GB, sizeof(unsigned char));
+
+  if (block)
+    std::cout << "Allocated 6 Gig block\n";
+  else {
+    std::cout << "Unable to allocate 6 Gig block.\n";
+
+    exit(1);
+  }
+
+  block[235LL] = 235;
+
+  numLoops = unsigned_uniform_random(3000, 3100);
+
+  for (counter = 0; counter < numLoops; counter += 1) {
+    i2 = -100;
+
+    while (i2 <= 0 || i2 > ARRAY_SIZE_6GB) {
+      i1 = unsigned_uniform_random(1, ARRAY_SIZE_6GB - 1);
+      i2 = 1024LL * 1024LL * 1024LL * 6 - i1;
+    }
+
+    block[i2] = (unsigned char)unsigned_uniform_random(0, 255);
+  }
+}
+
 
 
 /* ===============================================================
@@ -261,6 +338,7 @@ static void error_callback(int e, const char *d)
 
 int main(void)
 {
+    test64bit();
     runThreads();
     test_opencl();
     generateMandel(21);
@@ -434,5 +512,8 @@ int main(void)
     }
     nk_glfw3_shutdown();
     glfwTerminate();
+
+    free(block);
+
     return 0;
 }
