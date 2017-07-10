@@ -29,21 +29,18 @@
 
 #include "test64bit.cpp"
 #include "test_opencl.cpp"
-#include "drawing.cpp"
-#include "drawing2.cpp"
 #include "threads_test.cpp"
 #include "mandelbulb.cpp"
+
+#include "test_one_wnd.cpp"
+#include "test_two_wnd.cpp"
+#include "draw_mandel_wnd.cpp"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
 
 #define MAX_VERTEX_BUFFER 512 * 1024
 #define MAX_ELEMENT_BUFFER 128 * 1024
-
-#define UNUSED(a) (void)a
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define MAX(a,b) ((a) < (b) ? (b) : (a))
-#define LEN(a) (sizeof(a)/sizeof(a)[0])
 
 const unsigned int wMandel = 400;
 const unsigned int hMandel = 400;
@@ -107,8 +104,6 @@ int main(void)
     nk_glfw3_font_stash_end();
   }
 
-  bool show_text = false;
-
   background = nk_rgb(28,48,62);
 
   while (!glfwWindowShouldClose(win))
@@ -117,93 +112,18 @@ int main(void)
     glfwPollEvents();
     nk_glfw3_new_frame();
 
-    /* GUI */
-    if (nk_begin(
-      ctx, "Test 1", nk_rect(50, 50, 230, 250),
-      NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE
-    ))
-    {
-      enum {EASY, HARD};
 
-      static int op = EASY;
-      static int property = 20;
+    /* Windows */
+    testOneWnd(ctx, &background);
 
-      nk_layout_row_static(ctx, 30, 80, 1);
-      if (nk_button_label(ctx, "button")) {
-        fprintf(stdout, "button pressed\n");
-      }
-
-      nk_layout_row_dynamic(ctx, 30, 2);
-      if (nk_option_label(ctx, "easy", op == EASY)) {
-        op = EASY;
-      }
-      if (nk_option_label(ctx, "hard", op == HARD)) {
-        op = HARD;
-      }
-
-      nk_layout_row_dynamic(ctx, 25, 1);
-      nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
-
-      nk_layout_row_dynamic(ctx, 20, 1);
-      nk_label(ctx, "background:", NK_TEXT_LEFT);
-
-      nk_layout_row_dynamic(ctx, 25, 1);
-      if (nk_combo_begin_color(ctx, background, nk_vec2(nk_widget_width(ctx),400))) {
-        nk_layout_row_dynamic(ctx, 120, 1);
-        background = nk_color_picker(ctx, background, NK_RGBA);
-
-        nk_layout_row_dynamic(ctx, 25, 1);
-        background.r = (nk_byte)nk_propertyi(ctx, "#R:", 0, background.r, 255, 1,1);
-        background.g = (nk_byte)nk_propertyi(ctx, "#G:", 0, background.g, 255, 1,1);
-        background.b = (nk_byte)nk_propertyi(ctx, "#B:", 0, background.b, 255, 1,1);
-        background.a = (nk_byte)nk_propertyi(ctx, "#A:", 0, background.a, 255, 1,1);
-
-        nk_combo_end(ctx);
-      }
-    }
-    nk_end(ctx);
-
-    // creating a texture
     unsigned int texture;
     glGenTextures(1, &texture);
+    testTwoWnd(ctx, &texture, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    if (nk_begin(
-      ctx, "Test 2", nk_rect(WINDOW_WIDTH/2 - 110 - 300, WINDOW_HEIGHT/2 - 110 - 50, 230, 230),
-      NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_CLOSABLE
-    ))
-    {
-      nk_layout_row_dynamic(ctx, 20, 1);
-
-      draw_line(ctx, texture);
-
-      if (show_text == true) {
-        nk_label(ctx, "Hello, world!", NK_TEXT_LEFT);
-      } else {
-        nk_label(ctx, "", NK_TEXT_LEFT);
-      }
-
-      if (nk_button_label(ctx, "Clear")) {
-        show_text = false;
-      }
-
-      if (nk_button_label(ctx, "Hello, world!")) {
-        show_text = true;
-      }
-    }
-    nk_end(ctx);
-
-    // creating a texture
     unsigned int texture2;
     glGenTextures(1, &texture2);
+    drawMandelWnd(ctx, &texture2, WINDOW_WIDTH, WINDOW_HEIGHT, arrayMandel, wMandel, hMandel);
 
-    if (nk_begin(
-      ctx, "Mandelbulb cross section", nk_rect(WINDOW_WIDTH/2 - 110, WINDOW_HEIGHT/2 - 110, 420, 420),
-      NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_CLOSABLE
-    ))
-    {
-      draw_mandelbulb(ctx, texture2, arrayMandel, wMandel, hMandel);
-    }
-    nk_end(ctx);
 
     /* Draw */
     {
@@ -228,10 +148,9 @@ int main(void)
       glfwSwapBuffers(win);
     }
 
-    // delete texture
-    glDeleteTextures(1, &texture);
 
-    // delete texture
+    /* Clean up */
+    glDeleteTextures(1, &texture);
     glDeleteTextures(1, &texture2);
   }
 
