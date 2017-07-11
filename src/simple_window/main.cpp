@@ -1,6 +1,6 @@
 #include <iostream>
 #include <unistd.h>
-#include <stdio.h>
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdarg.h>
@@ -12,19 +12,10 @@
 #include <errno.h>
 #include <stdbool.h>
 
+#define NK_IMPLEMENTATION
+#include "common_nuklear_includes.hpp"
 #include <GL/glew.h>
 #include <glfw3.h>
-
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_STANDARD_IO
-#define NK_INCLUDE_STANDARD_VARARGS
-#define NK_INCLUDE_DEFAULT_ALLOCATOR
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_DEFAULT_FONT
-#define NK_IMPLEMENTATION
-#define NK_GLFW_GL3_IMPLEMENTATION
-#include "nuklear.h"
 #include "nuklear_glfw_gl3.h"
 
 #include "test_cpp_with_header.hpp"
@@ -34,7 +25,8 @@
 #include "threads_test.cpp"
 #include "mandelbulb.cpp"
 
-#include "test_one_wnd.cpp"
+#include "test_one_wnd.hpp"
+
 #include "test_two_wnd.cpp"
 #include "draw_mandel_wnd.cpp"
 

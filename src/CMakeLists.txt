@@ -97,6 +97,7 @@ add_executable(simple_window
   simple_window/main.cpp
 
   simple_window/test_cpp_with_header.cpp
+  simple_window/test_one_wnd.cpp
 
 )
 

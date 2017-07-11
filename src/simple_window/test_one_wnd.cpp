@@ -1,3 +1,7 @@
+#include "common_nuklear_includes.hpp"
+#include <stdio.h>
+#include "test_one_wnd.hpp"
+
 void testOneWnd(struct nk_context *ctx, struct nk_color *background)
 {
   if (nk_begin(
