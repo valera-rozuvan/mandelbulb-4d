@@ -96,6 +96,8 @@ add_executable(simple_window
 
   simple_window/main.cpp
 
+  simple_window/test_cpp_with_header.cpp
+
 )
 
 target_link_libraries(simple_window

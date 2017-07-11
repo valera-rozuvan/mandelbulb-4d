@@ -1,6 +1,6 @@
 void draw_line(
-  struct nk_context* ctx,
-  unsigned int texture
+  struct nk_context *ctx,
+  unsigned int *texture
 )
 {
   struct nk_command_buffer *canvas;
@@ -33,7 +33,7 @@ void draw_line(
   }
 
   // use a texture
-  glBindTexture(GL_TEXTURE_2D, texture);
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
 
   // set necessary texture parameters
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
@@ -54,7 +54,7 @@ void draw_line(
   glGenerateMipmap(GL_TEXTURE_2D);
 
   // render texture inside current nuklear window
-  myImage = nk_image_id((int)texture);
+  myImage = nk_image_id((int)texture[0]);
   nk_draw_image(canvas, total_space, &myImage, grid_color);
 
 

@@ -27,6 +27,8 @@
 #include "nuklear.h"
 #include "nuklear_glfw_gl3.h"
 
+#include "test_cpp_with_header.hpp"
+
 #include "test64bit.cpp"
 #include "test_opencl.cpp"
 #include "threads_test.cpp"
@@ -54,6 +56,8 @@ static void error_callback(int e, const char *d)
 
 int main(void)
 {
+  testFunc();
+
   test64bit();
   test64bit_freeMem();
 
@@ -118,7 +122,7 @@ int main(void)
 
     unsigned int texture;
     glGenTextures(1, &texture);
-    testTwoWnd(ctx, &texture, WINDOW_WIDTH, WINDOW_HEIGHT);
+    testTwoWnd(ctx, &texture);
 
     unsigned int texture2;
     glGenTextures(1, &texture2);
