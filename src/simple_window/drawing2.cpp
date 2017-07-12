@@ -1,3 +1,7 @@
+#include "common_nuklear_includes.hpp"
+#include <GL/glew.h>
+#include "drawing2.hpp"
+
 void draw_mandelbulb(
   struct nk_context* ctx,
   unsigned int texture,

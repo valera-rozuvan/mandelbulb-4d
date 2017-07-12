@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "threads_test.hpp"
 
 #define NUM_THREADS     9
 
@@ -40,10 +41,9 @@ int runThreads(void)
     result_code = pthread_join( threads[ index ], NULL );
     assert( !result_code );
     printf( "In main: thread %d has completed\n", index );
-   }
+  }
 
-   printf( "In main: All threads completed successfully\n" );
-   // exit( EXIT_SUCCESS );
+  printf( "In main: All threads completed successfully\n" );
 
   return 0;
 }

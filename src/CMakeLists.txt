@@ -100,6 +100,13 @@ add_executable(simple_window
   simple_window/test_one_wnd.cpp
   simple_window/test_two_wnd.cpp
   simple_window/drawing.cpp
+  simple_window/drawing2.cpp
+  simple_window/draw_mandel_wnd.cpp
+
+  simple_window/test64bit.cpp
+  simple_window/test_opencl.cpp
+  simple_window/threads_test.cpp
+  simple_window/mandelbulb.cpp
 
 )
 

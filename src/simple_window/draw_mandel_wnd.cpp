@@ -1,4 +1,6 @@
-#include "drawing2.cpp"
+#include "common_nuklear_includes.hpp"
+#include "drawing2.hpp"
+#include "draw_mandel_wnd.hpp"
 
 void drawMandelWnd(
   struct nk_context *ctx,

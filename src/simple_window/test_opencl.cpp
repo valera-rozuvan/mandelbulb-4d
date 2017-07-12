@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 
 #ifdef __APPLE__
@@ -6,11 +9,12 @@
 #include <CL/cl.h>
 #endif
 
+#include "test_opencl.hpp"
+
 #define MEM_SIZE (128)
 #define MAX_SOURCE_SIZE (0x100000)
 
-
-int test_opencl()
+int test_opencl(void)
 {
   cl_device_id device_id = NULL;
   cl_context context = NULL;

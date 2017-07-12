@@ -1,16 +1,4 @@
-#include <iostream>
-#include <unistd.h>
-
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdarg.h>
 #include <string.h>
-#include <math.h>
-#include <assert.h>
-#include <limits.h>
-#include <time.h>
-#include <errno.h>
-#include <stdbool.h>
 
 #define NK_IMPLEMENTATION
 #include "common_nuklear_includes.hpp"
@@ -20,15 +8,14 @@
 
 #include "test_cpp_with_header.hpp"
 
-#include "test64bit.cpp"
-#include "test_opencl.cpp"
-#include "threads_test.cpp"
-#include "mandelbulb.cpp"
+#include "test64bit.hpp"
+#include "test_opencl.hpp"
+#include "threads_test.hpp"
+#include "mandelbulb.hpp"
 
 #include "test_one_wnd.hpp"
 #include "test_two_wnd.hpp"
-
-#include "draw_mandel_wnd.cpp"
+#include "draw_mandel_wnd.hpp"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800

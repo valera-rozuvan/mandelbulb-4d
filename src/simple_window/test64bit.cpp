@@ -1,3 +1,7 @@
+#include <iostream>
+#include <stdint.h>
+#include "test64bit.hpp"
+
 #if defined(_WIN32) || defined(WIN32)
 #include "rand48.h"
 #endif

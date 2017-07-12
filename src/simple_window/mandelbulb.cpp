@@ -1,3 +1,6 @@
+#include <math.h>
+#include "mandelbulb.hpp"
+
 unsigned int mandel(double x0, double y0, double z0)
 {
   const unsigned int n = 8;
