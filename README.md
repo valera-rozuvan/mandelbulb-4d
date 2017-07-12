@@ -3,6 +3,18 @@
 State-of-the-art rendered, fine tuned to produce highly realistic visuals of arbitrary complex fractal 3D worlds
 
 
+## Introduction
+
+This project was born from the discussion [Remake of MB3D](http://www.fractalforums.com/mandelbulb-3d/mb3d-v2/) over at [Fractal Forums](http://www.fractalforums.com/). For the theory, please read [Mandelbulb (From Wikipedia, the free encyclopedia)](https://en.wikipedia.org/wiki/Mandelbulb).
+
+
+## Similar projects
+
+- [Mandelbulber v2](https://github.com/buddhi1980/mandelbulber2)
+- [Mandelbulb3D](https://github.com/thargor6/mb3d)
+- [Fragmentarium](https://github.com/Syntopia/Fragmentarium)
+
+
 ## Build instructions
 
 Currently this is a work in progress. On windows, I build binaries using cmake and MinGW-64-bit (from RubenVB for
