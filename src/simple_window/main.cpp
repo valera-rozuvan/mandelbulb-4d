@@ -26,8 +26,8 @@
 #include "mandelbulb.cpp"
 
 #include "test_one_wnd.hpp"
+#include "test_two_wnd.hpp"
 
-#include "test_two_wnd.cpp"
 #include "draw_mandel_wnd.cpp"
 
 #define WINDOW_WIDTH 1200

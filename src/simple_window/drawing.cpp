@@ -1,3 +1,7 @@
+#include "common_nuklear_includes.hpp"
+#include <GL/glew.h>
+#include "drawing.hpp"
+
 void draw_line(
   struct nk_context *ctx,
   unsigned int *texture

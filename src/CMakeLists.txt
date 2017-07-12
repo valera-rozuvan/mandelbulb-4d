@@ -98,6 +98,8 @@ add_executable(simple_window
 
   simple_window/test_cpp_with_header.cpp
   simple_window/test_one_wnd.cpp
+  simple_window/test_two_wnd.cpp
+  simple_window/drawing.cpp
 
 )
 

@@ -3,4 +3,4 @@
 
 void testOneWnd(struct nk_context *ctx, struct nk_color *background);
 
-#endif
+#endif // TEST_ONE_WND_HPP

@@ -12,4 +12,4 @@
 
 #include "nuklear.h"
 
-#endif
+#endif // COMMON_NUKLEAR_INCLUDES_HPP

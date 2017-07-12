@@ -1,4 +1,6 @@
-#include "drawing.cpp"
+#include "common_nuklear_includes.hpp"
+#include "drawing.hpp"
+#include "test_two_wnd.hpp"
 
 bool show_text = false;
 
