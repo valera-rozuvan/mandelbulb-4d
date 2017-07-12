@@ -1,6 +1,7 @@
 #include <iostream>
 #include <time.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "test64bit.hpp"
 
 #if defined(_WIN32) || defined(WIN32)
