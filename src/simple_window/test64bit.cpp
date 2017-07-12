@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include <stdint.h>
 #include "test64bit.hpp"
 
