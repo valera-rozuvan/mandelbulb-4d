@@ -23,7 +23,7 @@ Sample steps to build on Linux:
 
   cp ../src/hello.cl .
 
-  ./simple_window
+  ./mb4d_gui
 ```
 
 Cheers!

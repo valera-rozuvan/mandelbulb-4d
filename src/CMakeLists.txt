@@ -2,7 +2,7 @@
 
 cmake_minimum_required (VERSION 3.0)
 
-project (Simple_window)
+project (mb4d_gui)
 
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -92,25 +92,25 @@ add_definitions(
 
 # Tutorial 1
 
-add_executable(simple_window
+add_executable(mb4d_gui
 
-  simple_window/main.cpp
+  mb4d_gui/main.cpp
 
-  simple_window/test_cpp_with_header.cpp
-  simple_window/test_one_wnd.cpp
-  simple_window/test_two_wnd.cpp
-  simple_window/drawing.cpp
-  simple_window/drawing2.cpp
-  simple_window/draw_mandel_wnd.cpp
+  mb4d_gui/test_cpp_with_header.cpp
+  mb4d_gui/test_one_wnd.cpp
+  mb4d_gui/test_two_wnd.cpp
+  mb4d_gui/drawing.cpp
+  mb4d_gui/drawing2.cpp
+  mb4d_gui/draw_mandel_wnd.cpp
 
-  simple_window/test64bit.cpp
-  simple_window/test_opencl.cpp
-  simple_window/threads_test.cpp
-  simple_window/mandelbulb.cpp
+  mb4d_gui/test64bit.cpp
+  mb4d_gui/test_opencl.cpp
+  mb4d_gui/threads_test.cpp
+  mb4d_gui/mandelbulb.cpp
 
 )
 
-target_link_libraries(simple_window
+target_link_libraries(mb4d_gui
 
   ${ALL_LIBS}
 
@@ -118,7 +118,7 @@ target_link_libraries(simple_window
 
 # Xcode and Visual working directories
 
-set_target_properties(simple_window PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/simple_window/")
+set_target_properties(mb4d_gui PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/mb4d_gui/")
 
 
 
@@ -132,9 +132,9 @@ if (NOT ${CMAKE_GENERATOR} MATCHES "Xcode" )
 
 add_custom_command(
 
-  TARGET simple_window POST_BUILD
+  TARGET mb4d_gui POST_BUILD
 
-  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/simple_window${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/simple_window/"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mb4d_gui${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/mb4d_gui/"
 
 )
 
