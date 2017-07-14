@@ -44,7 +44,7 @@ add_subdirectory (external)
 
 include_directories(
 
-  external/glfw-3.1.2/include/GLFW/
+  external/glfw-3.2.1/include/GLFW/
 
   external/glew-1.13.0/include/
 
