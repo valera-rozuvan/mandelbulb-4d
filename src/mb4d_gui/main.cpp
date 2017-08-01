@@ -44,7 +44,8 @@ int main(void)
 
   test_opencl();
 
-  generateMandel(21, arrayMandel, wMandel, hMandel);
+  // generateMandel(21, arrayMandel, wMandel, hMandel);
+  generateFractal(-1, arrayMandel, wMandel, hMandel);
 
   /* Platform */
   static GLFWwindow *win;

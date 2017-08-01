@@ -8,5 +8,11 @@ void testFunc(void) {
 
   if (tenVar == 0) {
     twoVar = 5;
+  } else {
+    twoVar = 10;
+  }
+
+  if (twoVar == 10) {
+    tenVar = 5;
   }
 }
