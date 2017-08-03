@@ -35,6 +35,8 @@ static void error_callback(int e, const char *d)
 
 int main(void)
 {
+  int ret = 0;
+
   testFunc();
 
   test64bit();
@@ -42,7 +44,13 @@ int main(void)
 
   runThreads();
 
-  test_opencl();
+  ret = test_opencl();
+
+  if (ret == 0) {
+    fprintf(stdout, "OpenCL test passed.\n");
+  } else {
+    fprintf(stderr,"OpenCL test failed.\n");
+  }
 
   // generateMandel(21, arrayMandel, wMandel, hMandel);
   generateFractal(-1, arrayMandel, wMandel, hMandel);

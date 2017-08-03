@@ -34,13 +34,11 @@ int test_opencl(void)
   if (getcwd(cwd, sizeof(cwd)) != NULL) {
     fprintf(stdout, "Current working dir: %s\n", cwd);
   } else {
-    // perror("getcwd() error");
     fprintf(stderr,"getcwd() failed!\n");
-    return 0;
+    return 1;
   }
 
   FILE *fp;
-  // char fileName[] = "C:/dev/cpp/hello.cl";
   char fileName[] = "hello.cl";
 
   #if defined(_WIN32) || defined(WIN32)
@@ -56,8 +54,8 @@ int test_opencl(void)
     strcat(fullPath, pathSeparator);
     strcat(fullPath, fileName);
   } else {
-    fprintf(stderr,"malloc failed!\n");
-    return 0;
+    fprintf(stderr, "malloc failed!\n");
+    return 1;
   }
 
   char *source_str;
@@ -69,7 +67,7 @@ int test_opencl(void)
   fp = fopen(fullPath, "r");
   if (!fp) {
     fprintf(stderr, "Failed to load kernel.\n");
-    exit(1);
+    return 1;
   }
   source_str = (char*)malloc(MAX_SOURCE_SIZE);
   source_size = fread(source_str, 1, MAX_SOURCE_SIZE, fp);
@@ -77,6 +75,12 @@ int test_opencl(void)
 
   /* Get Platform and Device Info */
   ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
+
+  if (ret != CL_SUCCESS) {
+    fprintf(stderr, "clGetPlatformIDs() failed!\n");
+    return 1;
+  }
+
   ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
 
   /* Create OpenCL context */

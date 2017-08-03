@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <math.h>
 #include "mandelbulb.hpp"
 #include "vec3_math.hpp"
