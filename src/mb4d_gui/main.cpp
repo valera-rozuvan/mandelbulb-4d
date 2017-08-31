@@ -1,4 +1,5 @@
 #include <string.h>
+#include <time.h>
 
 #define NK_IMPLEMENTATION
 #include "common_nuklear_includes.hpp"
@@ -24,8 +25,8 @@
 #define MAX_VERTEX_BUFFER 512 * 1024
 #define MAX_ELEMENT_BUFFER 128 * 1024
 
-const unsigned int wMandel = 2000;
-const unsigned int hMandel = 2000;
+const unsigned int wMandel = 500;
+const unsigned int hMandel = 500;
 
 unsigned char arrayMandel[wMandel * hMandel * 4];
 
@@ -56,12 +57,17 @@ int main(void)
   }
 
   camera1.set_Px(-2.0);
-  camera1.set_Pz(0.3);
+  camera1.set_Pz(5.5);
   camera1.set_Py(-0.3);
-  camera1.set_F(1.0);
+  camera1.set_F(0.8);
+  camera1.set_beta(35.0);
   camera1.recalculate_internals();
 
+  clock_t begin = clock();
   generateFractal(arrayMandel, wMandel, hMandel, &camera1);
+  clock_t end = clock();
+  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  printf("Elapsed: %f seconds\n", time_spent);
 
   /* Platform */
   static GLFWwindow *win;

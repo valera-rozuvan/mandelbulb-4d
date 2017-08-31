@@ -1,6 +1,8 @@
 #include <math.h>
 #include "mcamera.hpp"
 
+const double PI_ = 3.14159265358979323846;
+
 double abs(double a) {
   if (a < 0) {
     return -1.0 * a;
@@ -68,17 +70,15 @@ void MCamera::set_F(double F_) {
 }
 
 void MCamera::set_alfa(double alfa_) {
-  this->alfa = alfa_;
+  this->alfa = (alfa_ * PI_) / 180.0;
 }
 
 void MCamera::set_beta(double beta_) {
-  this->beta = beta_;
+  this->beta = (beta_ * PI_) / 180.0;
 }
 
 // Setting camera defaults on object instantiation.
 MCamera::MCamera(void) {
-  const double PI_ = 3.14159265358979323846;
-
   // Camera positioned at (0, 0, 0).
   this->Px = 0.0;
   this->Py = 0.0;
