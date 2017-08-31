@@ -1,6 +1,9 @@
 #include <string.h>
 #include <time.h>
 
+#include <iostream>
+#include <thread>
+
 #define NK_IMPLEMENTATION
 #include "common_nuklear_includes.hpp"
 #include <GL/glew.h>
@@ -40,6 +43,8 @@ static void error_callback(int e, const char *d)
 int main(void)
 {
   int ret = 0;
+
+  std::cout << std::thread::hardware_concurrency() << std::endl;
 
   testFunc();
 
