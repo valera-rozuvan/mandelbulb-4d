@@ -2,15 +2,9 @@
 #define MANDELBULB_HPP
 
 void generateFractal(
-  int layer,
   unsigned char *arrayMandel,
-  const unsigned int wMandel, const unsigned int hMandel
-);
-
-void generateMandel(
-  int layer,
-  unsigned char *arrayMandel,
-  const unsigned int wMandel, const unsigned int hMandel
+  const unsigned int wMandel, const unsigned int hMandel,
+  MCamera* camera
 );
 
 #endif // MANDELBULB_HPP

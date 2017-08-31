@@ -101,6 +101,8 @@ add_executable(mb4d_gui
   mb4d_gui/drawing2.cpp
   mb4d_gui/draw_mandel_wnd.cpp
 
+  mb4d_gui/mcamera.cpp
+
   mb4d_gui/test64bit.cpp
   mb4d_gui/test_opencl.cpp
   mb4d_gui/threads_test.cpp

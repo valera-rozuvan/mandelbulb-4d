@@ -11,6 +11,7 @@
 #include "test64bit.hpp"
 #include "test_opencl.hpp"
 #include "threads_test.hpp"
+#include "mcamera.hpp"
 #include "mandelbulb.hpp"
 
 #include "test_one_wnd.hpp"
@@ -23,10 +24,12 @@
 #define MAX_VERTEX_BUFFER 512 * 1024
 #define MAX_ELEMENT_BUFFER 128 * 1024
 
-const unsigned int wMandel = 400;
-const unsigned int hMandel = 400;
+const unsigned int wMandel = 2000;
+const unsigned int hMandel = 2000;
 
 unsigned char arrayMandel[wMandel * hMandel * 4];
+
+MCamera camera1;
 
 static void error_callback(int e, const char *d)
 {
@@ -52,8 +55,13 @@ int main(void)
     fprintf(stderr,"OpenCL test failed.\n");
   }
 
-  // generateMandel(21, arrayMandel, wMandel, hMandel);
-  generateFractal(-1, arrayMandel, wMandel, hMandel);
+  camera1.set_Px(-2.0);
+  camera1.set_Pz(0.3);
+  camera1.set_Py(-0.3);
+  camera1.set_F(1.0);
+  camera1.recalculate_internals();
+
+  generateFractal(arrayMandel, wMandel, hMandel, &camera1);
 
   /* Platform */
   static GLFWwindow *win;
@@ -106,11 +114,11 @@ int main(void)
 
 
     /* Windows */
-    testOneWnd(ctx, &background);
+    // testOneWnd(ctx, &background);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    testTwoWnd(ctx, &texture);
+    // unsigned int texture;
+    // glGenTextures(1, &texture);
+    // testTwoWnd(ctx, &texture);
 
     unsigned int texture2;
     glGenTextures(1, &texture2);
@@ -142,7 +150,7 @@ int main(void)
 
 
     /* Clean up */
-    glDeleteTextures(1, &texture);
+    // glDeleteTextures(1, &texture);
     glDeleteTextures(1, &texture2);
   }
 

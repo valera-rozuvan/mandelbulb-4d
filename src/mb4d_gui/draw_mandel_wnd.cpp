@@ -11,8 +11,8 @@ void drawMandelWnd(
 )
 {
   if (nk_begin(
-    ctx, "Mandelbulb cross section", nk_rect(window_width/2 - 110, window_heght/2 - 110, 420, 420),
-    NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_CLOSABLE
+    ctx, "Mandelbulb, pow 8", nk_rect(100, 100, 700, 700),
+    NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE | NK_WINDOW_SCALABLE
   ))
   {
     draw_mandelbulb(ctx, texture[0], arrayMandel, wMandel, hMandel);
