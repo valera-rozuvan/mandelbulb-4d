@@ -1,15 +1,7 @@
-#include <math.h>
+#include <cmath>
 #include "mcamera.hpp"
 
 const double PI_ = 3.14159265358979323846;
-
-double abs(double a) {
-  if (a < 0) {
-    return -1.0 * a;
-  }
-
-  return a;
-}
 
 void MCamera::set_P(double Px_, double Py_, double Pz_) {
   this->Px = Px_;
@@ -159,7 +151,7 @@ void MCamera::cache__get_3d_point__constants(const unsigned int* width, const un
 
   // We assume that two Aspect Ratios are the same, if their difference is less
   // than some very small EPS number.
-  if (abs(this->IMGP_AR - AR_2d_img) <= 0.0000000001) {
+  if (std::abs(this->IMGP_AR - AR_2d_img) <= 0.0000000001) {
     // Do nothing for now.
   } else if (this->IMGP_AR > AR_2d_img) {
     x_offset = 0.5 * this->IMGP_width - 0.5 * ((((double)(*width)) * this->IMGP_height) / ((double)(*height)));
