@@ -43,8 +43,7 @@ uint64_t unsigned_uniform_random(uint64_t low, uint64_t high)
 unsigned char *block = NULL;
 const uint64_t ARRAY_SIZE_6GB = 1024LL * 1024LL * 1024LL * 6;
 
-void test64bit(void)
-{
+void test64bit_allocMem(void) {
   std::cout << "Trying to allocate 6 GB block of memory." << std::endl;
   block = (unsigned char *)calloc(sizeof(unsigned char) * ARRAY_SIZE_6GB, sizeof(unsigned char));
 
@@ -55,7 +54,10 @@ void test64bit(void)
 
     exit(1);
   }
+}
 
+void test64bit_runTest(void)
+{
   std::cout << "Testing pre-defined memory access." << std::endl;
   block[235LL] = 235;
 

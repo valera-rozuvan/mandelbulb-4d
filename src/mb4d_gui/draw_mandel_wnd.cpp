@@ -5,17 +5,19 @@
 void drawMandelWnd(
   struct nk_context *ctx,
   unsigned int *texture,
-  const unsigned int window_width, const unsigned int window_heght,
   unsigned char arrayMandel[],
   const unsigned int wMandel, const unsigned int hMandel
 )
 {
-  if (nk_begin(
-    ctx, "Mandelbulb, pow 8", nk_rect(100, 100, 700, 700),
+  int ret_val = nk_begin(
+    ctx, "Mandelbulb, pow 8",
+    nk_rect(50, 50, wMandel, hMandel),
     NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE | NK_WINDOW_SCALABLE
-  ))
-  {
+  );
+
+  if (ret_val == 1) {
     draw_mandelbulb(ctx, texture[0], arrayMandel, wMandel, hMandel);
   }
+
   nk_end(ctx);
 }

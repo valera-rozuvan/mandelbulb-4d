@@ -7,8 +7,6 @@
 #include <glfw3.h>
 #include "nuklear_glfw_gl3.h"
 
-#include "test_cpp_with_header.hpp"
-
 #include "test64bit.hpp"
 #include "test_opencl.hpp"
 #include "threads_test.hpp"
@@ -19,41 +17,48 @@
 #include "test_two_wnd.hpp"
 #include "draw_mandel_wnd.hpp"
 
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 #define MAX_VERTEX_BUFFER 512 * 1024
 #define MAX_ELEMENT_BUFFER 128 * 1024
 
-const unsigned int wMandel = 500;
-const unsigned int hMandel = 500;
+const unsigned int wMandel = 600;
+const unsigned int hMandel = 400;
 
 unsigned char arrayMandel[wMandel * hMandel * 4];
 
 MCamera camera1;
 
-static void error_callback(int e, const char *d)
+static void error_callback(int e, const char* d)
 {
-  printf("Error %d: %s\n", e, d);
+  fprintf(stderr, "Error %d: %s\n", e, d);
 }
 
 int main(void)
 {
   int ret = 0;
+  double time_spent = 0.0;
+  unsigned int texture2;
+  float bg[4];
 
-  testFunc();
+  /* Nuklear window stuff */
+  static GLFWwindow* win;
+  int width = 0, height = 0;
+  struct nk_context* ctx;
+  struct nk_color background;
 
-  test64bit();
+  test64bit_allocMem();
+  test64bit_runTest();
   test64bit_freeMem();
 
-  runThreads();
+  test_threads();
 
   ret = test_opencl();
-
   if (ret == 0) {
     fprintf(stdout, "OpenCL test passed.\n");
   } else {
-    fprintf(stderr,"OpenCL test failed.\n");
+    fprintf(stderr, "OpenCL test failed.\n");
   }
 
   camera1.set_Px(-2.0);
@@ -63,31 +68,26 @@ int main(void)
   camera1.set_beta(35.0);
   camera1.recalculate_internals();
 
+  fprintf(stdout, "Generating fractal image, please wait ...\n");
   clock_t begin = clock();
   generateFractal(arrayMandel, wMandel, hMandel, &camera1);
   clock_t end = clock();
-  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("Elapsed: %f seconds\n", time_spent);
-
-  /* Platform */
-  static GLFWwindow *win;
-  int width = 0, height = 0;
-  struct nk_context *ctx;
-  struct nk_color background;
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  fprintf(stdout, "Done. Elapsed time: %f seconds.\n", time_spent);
 
   /* GLFW */
   glfwSetErrorCallback(error_callback);
   if (!glfwInit()) {
-    fprintf(stdout, "[GFLW] failed to init!\n");
+    fprintf(stdout, "ERROR: GFLW failed to initialize!\n");
     exit(1);
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
+  #ifdef __APPLE__
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+  #endif
 
   win = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Demo", NULL, NULL);
   glfwMakeContextCurrent(win);
@@ -97,7 +97,7 @@ int main(void)
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
   glewExperimental = 1;
   if (glewInit() != GLEW_OK) {
-    fprintf(stderr, "Failed to setup GLEW\n");
+    fprintf(stderr, "ERROR: Failed to setup GLEW!\n");
     exit(1);
   }
 
@@ -110,7 +110,7 @@ int main(void)
     nk_glfw3_font_stash_end();
   }
 
-  background = nk_rgb(28,48,62);
+  background = nk_rgb(133, 149, 175);
 
   while (!glfwWindowShouldClose(win))
   {
@@ -126,15 +126,12 @@ int main(void)
     // glGenTextures(1, &texture);
     // testTwoWnd(ctx, &texture);
 
-    unsigned int texture2;
     glGenTextures(1, &texture2);
-    drawMandelWnd(ctx, &texture2, WINDOW_WIDTH, WINDOW_HEIGHT, arrayMandel, wMandel, hMandel);
+    drawMandelWnd(ctx, &texture2, arrayMandel, wMandel, hMandel);
 
 
     /* Draw */
     {
-      float bg[4];
-
       nk_color_fv(bg, background);
 
       glfwGetWindowSize(win, &width, &height);

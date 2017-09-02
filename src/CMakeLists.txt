@@ -94,7 +94,6 @@ add_executable(mb4d_gui
 
   mb4d_gui/main.cpp
 
-  mb4d_gui/test_cpp_with_header.cpp
   mb4d_gui/test_one_wnd.cpp
   mb4d_gui/test_two_wnd.cpp
   mb4d_gui/drawing.cpp

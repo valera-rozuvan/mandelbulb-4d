@@ -30,11 +30,14 @@ int test_opencl(void)
 
   char string[MEM_SIZE];
 
+  fprintf(stdout, "Testing OpenCL capabilities.\n");
+
   char cwd[1024];
   if (getcwd(cwd, sizeof(cwd)) != NULL) {
     fprintf(stdout, "Current working dir: %s\n", cwd);
   } else {
-    fprintf(stderr,"getcwd() failed!\n");
+    fprintf(stderr, "getcwd() failed!\n");
+
     return 1;
   }
 
@@ -55,6 +58,7 @@ int test_opencl(void)
     strcat(fullPath, fileName);
   } else {
     fprintf(stderr, "malloc failed!\n");
+
     return 1;
   }
 
@@ -67,6 +71,7 @@ int test_opencl(void)
   fp = fopen(fullPath, "r");
   if (!fp) {
     fprintf(stderr, "Failed to load kernel.\n");
+
     return 1;
   }
   source_str = (char*)malloc(MAX_SOURCE_SIZE);
@@ -78,6 +83,7 @@ int test_opencl(void)
 
   if (ret != CL_SUCCESS) {
     fprintf(stderr, "clGetPlatformIDs() failed!\n");
+
     return 1;
   }
 
@@ -115,6 +121,7 @@ int test_opencl(void)
   );
 
   /* Display Result */
+  fprintf(stdout, "Output from OpenCL program:\n");
   puts(string);
 
   /* Finalization */
