@@ -91,9 +91,9 @@ double mod(double a, double N) {
 }
 
 double RepeatedDistanceEstimator(double xx, double yy, double zz) {
-    xx = mod(xx, 3) - 1.5;
-    yy = mod(yy, 3) - 1.5;
-    zz = mod(zz, 3) - 1.5;
+    xx = mod(xx, 6.0) - 3.0;
+    yy = mod(yy, 6.0) - 3.0;
+    zz = mod(zz, 6.0) - 3.0;
 
     return DistanceEstimator(xx, yy, zz);
 }
@@ -169,12 +169,15 @@ void generateFractal(
   double temp_color_G = 0.0;
   double temp_color_B = 0.0;
 
-  vec3_t camera_point = vec3_create(NULL);
+  double camera_point_x = 0.0;
+  double camera_point_y = 0.0;
+  double camera_point_z = 0.0;
+
   vec3_t point = vec3_create(NULL);
   vec3_t direction = vec3_create(NULL);
   vec3_t normal_v = vec3_create(NULL);
 
-  camera->get_P(&camera_point[0], &camera_point[1], &camera_point[2]);
+  camera->get_P(&camera_point_x, &camera_point_y, &camera_point_z);
   camera->cache__get_3d_point__constants(&wMandel, &hMandel);
 
   for (y = 0; y < hMandel; y += 1) {
@@ -186,9 +189,9 @@ void generateFractal(
         &point[0], &point[1], &point[2]
       );
 
-      direction[0] = point[0] - camera_point[0];
-      direction[1] = point[1] - camera_point[1];
-      direction[2] = point[2] - camera_point[2];
+      direction[0] = point[0] - camera_point_x;
+      direction[1] = point[1] - camera_point_y;
+      direction[2] = point[2] - camera_point_z;
 
       normalize(&direction);
 
@@ -235,5 +238,4 @@ void generateFractal(
   vec3_delete(normal_v);
   vec3_delete(direction);
   vec3_delete(point);
-  vec3_delete(camera_point);
 }

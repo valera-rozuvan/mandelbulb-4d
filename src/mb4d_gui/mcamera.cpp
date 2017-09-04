@@ -169,19 +169,16 @@ void MCamera::cache__get_3d_point__constants(const unsigned int* width, const un
   this->get_3d_point__constant__c2 = c2;
 }
 
-double MCamera::get_3d_point(
+void MCamera::get_3d_point(
   unsigned int* x_2d, unsigned int* y_2d,
   double* x_3d, double* y_3d, double* z_3d
 ) {
-  double eps = 0.0;
   double mult1 = this->get_3d_point__constant__x_offset + ((double)(*x_2d)) * this->get_3d_point__constant__c1;
   double mult2 = this->get_3d_point__constant__y_offset + ((double)(*y_2d)) * this->get_3d_point__constant__c2;
 
   *x_3d = this->TLx + this->RIGHTx * mult1 - this->UPx * mult2;
   *y_3d = this->TLy + this->RIGHTy * mult1 - this->UPy * mult2;
   *z_3d = this->TLz + this->RIGHTz * mult1 - this->UPz * mult2;
-
-  return eps;
 }
 
 void MCamera::get_P(double* Px_, double* Py_, double* Pz_) {

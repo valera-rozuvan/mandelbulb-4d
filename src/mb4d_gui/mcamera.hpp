@@ -85,7 +85,7 @@ class MCamera {
 
     void cache__get_3d_point__constants(const unsigned int*, const unsigned int*);
 
-    double get_3d_point(unsigned int*, unsigned int*, double*, double*, double*);
+    void get_3d_point(unsigned int*, unsigned int*, double*, double*, double*);
     void get_P(double*, double*, double*);
     void normalize(double*, double*, double*);
 

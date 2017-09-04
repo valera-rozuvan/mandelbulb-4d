@@ -13,6 +13,8 @@
 #include "mcamera.hpp"
 #include "mandelbulb.hpp"
 
+#include "parallel.hpp"
+
 #include "test_one_wnd.hpp"
 #include "test_two_wnd.hpp"
 #include "draw_mandel_wnd.hpp"
