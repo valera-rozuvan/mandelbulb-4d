@@ -1,11 +1,12 @@
 #ifndef DRAWING2_HPP
 #define DRAWING2_HPP
 
+#include "app_state.hpp"
+
 void draw_mandelbulb(
-  struct nk_context* ctx,
-  unsigned int texture,
-  unsigned char arrayMandel[],
-  const unsigned int WIDTH_IMG, const unsigned int HEIGHT_IMG
+  struct nk_context*,
+  unsigned int,
+  AppState*
 );
 
 #endif // DRAWING2_HPP

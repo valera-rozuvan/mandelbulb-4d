@@ -92,6 +92,8 @@ class MCamera {
     // Constructor. Initialize all private members.
     MCamera(void);
 
+    ~MCamera(void);
+
 };
 
 #endif

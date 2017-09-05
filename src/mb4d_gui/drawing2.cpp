@@ -5,8 +5,7 @@
 void draw_mandelbulb(
   struct nk_context* ctx,
   unsigned int texture,
-  unsigned char arrayMandel[],
-  const unsigned int WIDTH_IMG, const unsigned int HEIGHT_IMG
+  AppState* appState
 )
 {
   struct nk_command_buffer *canvas;
@@ -35,7 +34,7 @@ void draw_mandelbulb(
   */
 
   // allocate memory and set texture data
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, WIDTH_IMG, HEIGHT_IMG, 0, GL_RGBA, GL_UNSIGNED_BYTE, arrayMandel);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, appState->wMandel, appState->hMandel, 0, GL_RGBA, GL_UNSIGNED_BYTE, appState->arrayMandel);
 
   glGenerateMipmap(GL_TEXTURE_2D);
 

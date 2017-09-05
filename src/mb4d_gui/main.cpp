@@ -13,24 +13,19 @@
 #include "mcamera.hpp"
 #include "mandelbulb.hpp"
 
+#include "app_state.hpp"
+
 #include "parallel.hpp"
 
 #include "test_one_wnd.hpp"
 #include "test_two_wnd.hpp"
 #include "draw_mandel_wnd.hpp"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
 
 #define MAX_VERTEX_BUFFER 512 * 1024
 #define MAX_ELEMENT_BUFFER 128 * 1024
-
-const unsigned int wMandel = 600;
-const unsigned int hMandel = 400;
-
-unsigned char arrayMandel[wMandel * hMandel * 4];
-
-MCamera camera1;
 
 static void error_callback(int e, const char* d)
 {
@@ -43,6 +38,8 @@ int main(void)
   double time_spent = 0.0;
   unsigned int texture2;
   float bg[4];
+
+  AppState* appState = new AppState(400, 300);
 
   /* Nuklear window stuff */
   static GLFWwindow* win;
@@ -63,16 +60,16 @@ int main(void)
     fprintf(stderr, "OpenCL test failed.\n");
   }
 
-  camera1.set_Px(-2.0);
-  camera1.set_Pz(5.5);
-  camera1.set_Py(-0.3);
-  camera1.set_F(0.8);
-  camera1.set_beta(35.0);
-  camera1.recalculate_internals();
+  appState->camera->set_Px(-2.0);
+  appState->camera->set_Pz(5.5);
+  appState->camera->set_Py(-0.3);
+  appState->camera->set_F(0.8);
+  appState->camera->set_beta(35.0);
+  appState->camera->recalculate_internals();
 
   fprintf(stdout, "Generating fractal image, please wait ...\n");
   clock_t begin = clock();
-  generateFractal(arrayMandel, wMandel, hMandel, &camera1);
+  generateFractal(appState);
   clock_t end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   fprintf(stdout, "Done. Elapsed time: %f seconds.\n", time_spent);
@@ -91,7 +88,7 @@ int main(void)
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   #endif
 
-  win = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Demo", NULL, NULL);
+  win = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "m4d", NULL, NULL);
   glfwMakeContextCurrent(win);
   glfwGetWindowSize(win, &width, &height);
 
@@ -129,7 +126,7 @@ int main(void)
     // testTwoWnd(ctx, &texture);
 
     glGenTextures(1, &texture2);
-    drawMandelWnd(ctx, &texture2, arrayMandel, wMandel, hMandel);
+    drawMandelWnd(ctx, &texture2, appState);
 
 
     /* Draw */
@@ -161,6 +158,8 @@ int main(void)
 
   nk_glfw3_shutdown();
   glfwTerminate();
+
+  delete appState;
 
   return 0;
 }

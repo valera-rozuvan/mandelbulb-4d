@@ -2,7 +2,9 @@
 #define PARALLEL_HPP
 
 class Parallel {
-  Parallel(void);
+  public:
+    Parallel(void);
+    ~Parallel(void);
 };
 
 #endif

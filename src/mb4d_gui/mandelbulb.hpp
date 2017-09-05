@@ -1,10 +1,10 @@
 #ifndef MANDELBULB_HPP
 #define MANDELBULB_HPP
 
+#include "app_state.hpp"
+
 void generateFractal(
-  unsigned char *arrayMandel,
-  const unsigned int wMandel, const unsigned int hMandel,
-  MCamera* camera
+  AppState*
 );
 
 #endif // MANDELBULB_HPP

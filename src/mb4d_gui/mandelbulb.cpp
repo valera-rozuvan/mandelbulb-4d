@@ -142,9 +142,7 @@ double trace(vec3_t from, vec3_t direction)
 }
 
 void generateFractal(
-  unsigned char *arrayMandel,
-  const unsigned int wMandel, const unsigned int hMandel,
-  MCamera* camera
+  AppState* appState
 ) {
   double totalDistance = 0;
   unsigned int i = 0;
@@ -177,14 +175,14 @@ void generateFractal(
   vec3_t direction = vec3_create(NULL);
   vec3_t normal_v = vec3_create(NULL);
 
-  camera->get_P(&camera_point_x, &camera_point_y, &camera_point_z);
-  camera->cache__get_3d_point__constants(&wMandel, &hMandel);
+  appState->camera->get_P(&camera_point_x, &camera_point_y, &camera_point_z);
+  appState->camera->cache__get_3d_point__constants(&(appState->wMandel), &(appState->hMandel));
 
-  for (y = 0; y < hMandel; y += 1) {
-    // printf("y = %d (of %d)\n", y, hMandel);
+  for (y = 0; y < appState->hMandel; y += 1) {
+    printf("y = %d (of %d)\n", y, appState->hMandel);
 
-    for (x = 0; x < wMandel; x += 1) {
-      camera->get_3d_point(
+    for (x = 0; x < appState->wMandel; x += 1) {
+      appState->camera->get_3d_point(
         &x, &y,
         &point[0], &point[1], &point[2]
       );
@@ -198,10 +196,10 @@ void generateFractal(
       totalDistance = trace(point, direction);
 
       if (totalDistance == -1) {
-        arrayMandel[i] = 0;
-        arrayMandel[i + 1] = 0;
-        arrayMandel[i + 2] = 0;
-        arrayMandel[i + 3] = 255;
+        appState->arrayMandel[i] = 0;
+        appState->arrayMandel[i + 1] = 0;
+        appState->arrayMandel[i + 2] = 0;
+        appState->arrayMandel[i + 3] = 255;
       } else {
         get_normal(point, direction, totalDistance, &normal_v);
 
@@ -225,10 +223,10 @@ void generateFractal(
           temp_color_B = 1.0;
         }
 
-        arrayMandel[i] = (unsigned int)(255.0 * temp_color_R);
-        arrayMandel[i + 1] = (unsigned int)(255.0 * temp_color_G);
-        arrayMandel[i + 2] = (unsigned int)(255.0 * temp_color_B);
-        arrayMandel[i + 3] = 255;
+        appState->arrayMandel[i] = (unsigned int)(255.0 * temp_color_R);
+        appState->arrayMandel[i + 1] = (unsigned int)(255.0 * temp_color_G);
+        appState->arrayMandel[i + 2] = (unsigned int)(255.0 * temp_color_B);
+        appState->arrayMandel[i + 3] = 255;
       }
 
       i += 4;

@@ -93,22 +93,18 @@ add_definitions(
 add_executable(mb4d_gui
 
   mb4d_gui/main.cpp
-
   mb4d_gui/test_one_wnd.cpp
   mb4d_gui/test_two_wnd.cpp
   mb4d_gui/drawing.cpp
   mb4d_gui/drawing2.cpp
   mb4d_gui/draw_mandel_wnd.cpp
-
   mb4d_gui/mcamera.cpp
-
   mb4d_gui/parallel.cpp
-
+  mb4d_gui/app_state.cpp
   mb4d_gui/test64bit.cpp
   mb4d_gui/test_opencl.cpp
   mb4d_gui/threads_test.cpp
   mb4d_gui/mandelbulb.cpp
-
   mb4d_gui/vec3_math.cpp
 
 )

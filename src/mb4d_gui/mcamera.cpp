@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <cmath>
 #include "mcamera.hpp"
 
@@ -94,6 +95,11 @@ MCamera::MCamera(void) {
   this->beta = (45.0 * PI_) / 180.0;
 
   this->recalculate_internals();
+}
+
+MCamera::~MCamera()
+{
+  fprintf(stdout, "MCamera::~MCamera destructor.\n");
 }
 
 void MCamera::calculate_RIGHT(void) {
