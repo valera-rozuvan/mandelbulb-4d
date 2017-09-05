@@ -5,10 +5,9 @@
 #include "mandelbulb.hpp"
 #include "vec3_math.hpp"
 
-const int MaximumRaySteps = 80;
+const int MaximumRaySteps = 320;
 const double MinimumDistance = 0.001;
 const double HalfMinimumDistance = 0.0005;
-const double R = 5.0;
 
 double max_double(double a, double b)
 {
@@ -35,16 +34,18 @@ void normalize(vec3_t* P) {
   (*P)[2] /= length;
 }
 
+// const double R = 5.0;
+//
 // double DistanceEstimator(double x, double y, double z)
 // {
 //   double length = sqrt(x * x + y * y + z * z);
-
+//
 //   return max_double(0.0, length - R);
 // }
 
 const double bailout = 13.7;
-const double Power = 8.0;
-const double fractalIters = 500;
+const double Power = 42.08642;
+const double fractalIters = 1000;
 
 double DistanceEstimator(double xx, double yy, double zz) {
   unsigned int i = 0;
@@ -98,10 +99,10 @@ double RepeatedDistanceEstimator(double xx, double yy, double zz) {
     return DistanceEstimator(xx, yy, zz);
 }
 
-void get_normal(vec3_t from, vec3_t direction, double totalDistance, vec3_t* normal_v) {
-  double Px = from[0] + totalDistance * direction[0];
-  double Py = from[1] + totalDistance * direction[1];
-  double Pz = from[2] + totalDistance * direction[2];
+void get_normal(vec3_t* from, vec3_t* direction, double totalDistance, vec3_t* normal_v) {
+  double Px = (*from)[0] + totalDistance * ((*direction)[0]);
+  double Py = (*from)[1] + totalDistance * ((*direction)[1]);
+  double Pz = (*from)[2] + totalDistance * ((*direction)[2]);
 
   (*normal_v)[0] = RepeatedDistanceEstimator(Px + HalfMinimumDistance, Py, Pz) - RepeatedDistanceEstimator(Px - HalfMinimumDistance, Py, Pz);
   (*normal_v)[1] = RepeatedDistanceEstimator(Px, Py + HalfMinimumDistance, Pz) - RepeatedDistanceEstimator(Px, Py - HalfMinimumDistance, Pz);
@@ -110,62 +111,60 @@ void get_normal(vec3_t from, vec3_t direction, double totalDistance, vec3_t* nor
   normalize(&(*normal_v));
 }
 
-double trace(vec3_t from, vec3_t direction)
+double raymarch(vec3_t* from, vec3_t* direction)
 {
   double totalDistance = 0.0;
   double distance = 0.0;
-  int steps = 0;
-  double ret_value = -1.0;
+  unsigned int steps = 0;
 
-  vec3_t point = vec3_create(NULL);
-  vec3_t scaledDir = vec3_create(NULL);
+  double Px = 0.0;
+  double Py = 0.0;
+  double Pz = 0.0;
 
   for (steps = 0; steps < MaximumRaySteps; steps += 1) {
-    vec3_set(from, point);
-    vec3_scale(direction, totalDistance, scaledDir);
-    vec3_add(point, scaledDir, NULL);
+    Px = (*from)[0] + totalDistance * ((*direction)[0]);
+    Py = (*from)[1] + totalDistance * ((*direction)[1]);
+    Pz = (*from)[2] + totalDistance * ((*direction)[2]);
 
-    distance = RepeatedDistanceEstimator(point[0], point[1], point[2]);
+    distance = RepeatedDistanceEstimator(Px, Py, Pz);
     totalDistance += distance;
 
     if (distance < MinimumDistance) {
-      ret_value = totalDistance;
-
-      break;
+      return totalDistance;
     }
   }
 
-  vec3_delete(point);
-  vec3_delete(scaledDir);
-
-  return ret_value;
+  return -1.0;
 }
 
 void generateFractal(
   AppState* appState
 ) {
   double totalDistance = 0;
+
   unsigned int i = 0;
   unsigned int x = 0;
   unsigned int y = 0;
 
-  double LSx = -23.0;
-  double LSy = 17.0;
-  double LSz = 12.0;
+  double LightSrc_x = -23.0;
+  double LightSrc_y = 17.0;
+  double LightSrc_z = 12.0;
 
-  normalize(&LSx, &LSy, &LSz);
+  double temp_coef = 0.0;
 
-  double color_Ra = 0.019607843137255;
-  double color_Ga = 0.145098039215686;
-  double color_Ba = 0.376470588235294;
+  normalize(&LightSrc_x, &LightSrc_y, &LightSrc_z);
 
-  double color_Rd = 0.349019607843137;
-  double color_Gd = 0.694117647058824;
-  double color_Bd = 0.905882352941176;
+  double clr_R_ambient = 0.019607843137255;
+  double clr_G_ambient = 0.145098039215686;
+  double clr_B_ambient = 0.376470588235294;
 
-  double temp_color_R = 0.0;
-  double temp_color_G = 0.0;
-  double temp_color_B = 0.0;
+  double clr_R_diffuse = 0.349019607843137;
+  double clr_G_diffuse = 0.694117647058824;
+  double clr_B_diffuse = 0.905882352941176;
+
+  double temp_clr_R = 0.0;
+  double temp_clr_G = 0.0;
+  double temp_clr_B = 0.0;
 
   double camera_point_x = 0.0;
   double camera_point_y = 0.0;
@@ -179,7 +178,7 @@ void generateFractal(
   appState->camera->cache__get_3d_point__constants(&(appState->wMandel), &(appState->hMandel));
 
   for (y = 0; y < appState->hMandel; y += 1) {
-    printf("y = %d (of %d)\n", y, appState->hMandel);
+    // printf("y = %d (of %d)\n", y, appState->hMandel);
 
     for (x = 0; x < appState->wMandel; x += 1) {
       appState->camera->get_3d_point(
@@ -193,7 +192,7 @@ void generateFractal(
 
       normalize(&direction);
 
-      totalDistance = trace(point, direction);
+      totalDistance = raymarch(&point, &direction);
 
       if (totalDistance == -1) {
         appState->arrayMandel[i] = 0;
@@ -201,31 +200,45 @@ void generateFractal(
         appState->arrayMandel[i + 2] = 0;
         appState->arrayMandel[i + 3] = 255;
       } else {
-        get_normal(point, direction, totalDistance, &normal_v);
+        get_normal(&point, &direction, totalDistance, &normal_v);
 
-        temp_color_R = color_Ra + color_Rd * max_double(0.0, normal_v[0] * LSx + normal_v[1] * LSy +normal_v[2] * LSz);
-        temp_color_G = color_Ga + color_Gd * max_double(0.0, normal_v[0] * LSx + normal_v[1] * LSy +normal_v[2] * LSz);
-        temp_color_B = color_Ba + color_Bd * max_double(0.0, normal_v[0] * LSx + normal_v[1] * LSy +normal_v[2] * LSz);
+        temp_coef = max_double(0.0, normal_v[0] * LightSrc_x + normal_v[1] * LightSrc_y + normal_v[2] * LightSrc_z);
 
-        if (temp_color_R < 0) {
-          temp_color_R = 0;
-        } else if (temp_color_R > 1.0) {
-          temp_color_R = 1.0;
+        temp_clr_R = clr_R_ambient + clr_R_diffuse * temp_coef;
+        temp_clr_G = clr_G_ambient + clr_G_diffuse * temp_coef;
+        temp_clr_B = clr_B_ambient + clr_B_diffuse * temp_coef;
+
+        temp_coef = 20.0 * MinimumDistance * totalDistance;
+
+        temp_clr_R = temp_clr_R / (temp_coef + temp_clr_R);
+        temp_clr_G = temp_clr_G / (temp_coef + temp_clr_G);
+        temp_clr_B = temp_clr_B / (temp_coef + temp_clr_B);
+
+        temp_coef = 1.0 / (totalDistance - 1.0);
+
+        temp_clr_R = temp_coef * (pow(totalDistance, temp_clr_R) - 1.0);
+        temp_clr_G = temp_coef * (pow(totalDistance, temp_clr_G) - 1.0);
+        temp_clr_B = temp_coef * (pow(totalDistance, temp_clr_B) - 1.0);
+
+        if (temp_clr_R < 0) {
+          temp_clr_R = 0;
+        } else if (temp_clr_R > 1.0) {
+          temp_clr_R = 1.0;
         }
-        if (temp_color_G < 0) {
-          temp_color_G = 0;
-        } else if (temp_color_G > 1.0) {
-          temp_color_G = 1.0;
+        if (temp_clr_G < 0) {
+          temp_clr_G = 0;
+        } else if (temp_clr_G > 1.0) {
+          temp_clr_G = 1.0;
         }
-        if (temp_color_B < 0) {
-          temp_color_B = 0;
-        } else if (temp_color_B > 1.0) {
-          temp_color_B = 1.0;
+        if (temp_clr_B < 0) {
+          temp_clr_B = 0;
+        } else if (temp_clr_B > 1.0) {
+          temp_clr_B = 1.0;
         }
 
-        appState->arrayMandel[i] = (unsigned int)(255.0 * temp_color_R);
-        appState->arrayMandel[i + 1] = (unsigned int)(255.0 * temp_color_G);
-        appState->arrayMandel[i + 2] = (unsigned int)(255.0 * temp_color_B);
+        appState->arrayMandel[i] = (unsigned int)(255.0 * temp_clr_R);
+        appState->arrayMandel[i + 1] = (unsigned int)(255.0 * temp_clr_G);
+        appState->arrayMandel[i + 2] = (unsigned int)(255.0 * temp_clr_B);
         appState->arrayMandel[i + 3] = 255;
       }
 

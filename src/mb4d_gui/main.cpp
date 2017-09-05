@@ -39,7 +39,7 @@ int main(void)
   unsigned int texture2;
   float bg[4];
 
-  AppState* appState = new AppState(400, 300);
+  AppState* appState = new AppState(800, 600);
 
   /* Nuklear window stuff */
   static GLFWwindow* win;
