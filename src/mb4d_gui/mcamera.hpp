@@ -83,9 +83,9 @@ class MCamera {
 
     void recalculate_internals(void);
 
-    void cache__get_3d_point__constants(const unsigned int*, const unsigned int*);
+    void cache__get_3d_point__constants(unsigned int, unsigned int);
 
-    void get_3d_point(unsigned int*, unsigned int*, double*, double*, double*);
+    void get_3d_point(unsigned int, unsigned int, double*, double*, double*);
     void get_P(double*, double*, double*);
 
     // Constructor. Initialize all private members.

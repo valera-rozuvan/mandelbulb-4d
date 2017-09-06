@@ -7,6 +7,10 @@ AppState::AppState(const unsigned int wMandel_, const unsigned int hMandel_)
 {
   this->is_generating = false;
 
+  this->MaximumRaySteps = 320;
+  this->MinimumDistance = 0.001;
+  this->HalfMinimumDistance = 0.0005;
+
   this->LightSrc_x = -23.0;
   this->LightSrc_y = 17.0;
   this->LightSrc_z = 12.0;

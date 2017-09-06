@@ -141,8 +141,8 @@ void MCamera::recalculate_internals(void) {
   this->caluclate_AR();
 }
 
-void MCamera::cache__get_3d_point__constants(const unsigned int* width, const unsigned int* height) {
-  double AR_2d_img = ((double)(*width)) / ((double)(*height));
+void MCamera::cache__get_3d_point__constants(unsigned int width, unsigned int height) {
+  double AR_2d_img = ((double)width) / ((double)height);
   double x_offset = 0.0;
   double y_offset = 0.0;
   double c1 = 0.0;
@@ -153,13 +153,13 @@ void MCamera::cache__get_3d_point__constants(const unsigned int* width, const un
   if (std::abs(this->IMGP_AR - AR_2d_img) <= 0.0000000001) {
     // Do nothing for now.
   } else if (this->IMGP_AR > AR_2d_img) {
-    x_offset = 0.5 * this->IMGP_width - 0.5 * ((((double)(*width)) * this->IMGP_height) / ((double)(*height)));
+    x_offset = 0.5 * this->IMGP_width - 0.5 * ((((double)width) * this->IMGP_height) / ((double)height));
   } else if (this->IMGP_AR < AR_2d_img) {
-    y_offset = 0.5 * this->IMGP_height - 0.5 * ((((double)(*height)) * this->IMGP_width) / ((double)(*width)));
+    y_offset = 0.5 * this->IMGP_height - 0.5 * ((((double)height) * this->IMGP_width) / ((double)width));
   }
 
-  c1 = ((this->IMGP_width - 2.0 * x_offset) / ((double)(*width)));
-  c2 = ((this->IMGP_height - 2.0 * y_offset) / ((double)(*height)));
+  c1 = ((this->IMGP_width - 2.0 * x_offset) / ((double)width));
+  c2 = ((this->IMGP_height - 2.0 * y_offset) / ((double)height));
 
   this->get_3d_point__constant__x_offset = x_offset;
   this->get_3d_point__constant__y_offset = y_offset;
@@ -169,11 +169,11 @@ void MCamera::cache__get_3d_point__constants(const unsigned int* width, const un
 }
 
 void MCamera::get_3d_point(
-  unsigned int* x_2d, unsigned int* y_2d,
+  unsigned int x_2d, unsigned int y_2d,
   double* x_3d, double* y_3d, double* z_3d
 ) {
-  double mult1 = this->get_3d_point__constant__x_offset + ((double)(*x_2d)) * this->get_3d_point__constant__c1;
-  double mult2 = this->get_3d_point__constant__y_offset + ((double)(*y_2d)) * this->get_3d_point__constant__c2;
+  double mult1 = this->get_3d_point__constant__x_offset + ((double)x_2d) * this->get_3d_point__constant__c1;
+  double mult2 = this->get_3d_point__constant__y_offset + ((double)y_2d) * this->get_3d_point__constant__c2;
 
   *x_3d = this->TLx + this->RIGHTx * mult1 - this->UPx * mult2;
   *y_3d = this->TLy + this->RIGHTy * mult1 - this->UPy * mult2;

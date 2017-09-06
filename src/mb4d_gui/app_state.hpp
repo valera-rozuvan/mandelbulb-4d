@@ -9,6 +9,10 @@ class AppState {
   public:
     bool is_generating;
 
+    unsigned int MaximumRaySteps;
+    double MinimumDistance;
+    double HalfMinimumDistance;
+
     double LightSrc_x;
     double LightSrc_y;
     double LightSrc_z;

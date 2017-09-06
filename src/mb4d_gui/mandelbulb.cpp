@@ -3,11 +3,8 @@
 #include <math.h>
 #include "mcamera.hpp"
 #include "utils.hpp"
+#include "color.hpp"
 #include "mandelbulb.hpp"
-
-const unsigned int MaximumRaySteps = 320;
-const double MinimumDistance = 0.001;
-const double HalfMinimumDistance = 0.0005;
 
 // const double R = 5.0;
 //
@@ -22,20 +19,27 @@ const double bailout = 13.7;
 const double Power = 42.08642;
 const double fractalIters = 1000;
 
-double DistanceEstimator(double xx, double yy, double zz)
+double DistanceEstimator(double Px, double Py, double Pz)
 {
-  unsigned int i = 0;
+  double zX;
+  double zY;
+  double zZ;
 
-  double zX = xx;
-  double zY = yy;
-  double zZ = zz;
+  double dr;
 
-  double theta = 0.0;
-  double phi = 0.0;
-  double zr = 0.0;
+  unsigned int i;
 
-  double dr = 1.0;
-  double r = 0.0;
+  double theta;
+  double phi;
+  double zr;
+
+  double r;
+
+  dr = 1.0;
+
+  zX = Px;
+  zY = Py;
+  zZ = Pz;
 
   for (i = 0; i < fractalIters; i += 1) {
     r = sqrt(zX * zX + zY * zY + zZ * zZ);
@@ -55,9 +59,9 @@ double DistanceEstimator(double xx, double yy, double zz)
     phi = phi * Power;
 
     // Convert back to Cartesian coordinates.
-    zX = zr * sin(theta) * cos(phi) + xx;
-    zY = zr * sin(phi) * sin(theta) + yy;
-    zZ = zr * cos(theta) + zz;
+    zX = zr * sin(theta) * cos(phi) + Px;
+    zY = zr * sin(phi) * sin(theta) + Py;
+    zZ = zr * cos(theta) + Pz;
   }
 
   return 0.5 * log(r) * r / dr;
@@ -83,34 +87,39 @@ double RepeatedDistanceEstimator(double Px, double Py, double Pz)
 
 /*
  *
- * get_normal(P, N) - calculates normal vector N at point P
+ * get_normal(AppState, P, N) - calculates normal vector N at point P
  *
+ * AppState - application state configuration
  * Px, Py, Pz - coordinates of point P
  * Nx, Ny, Nz - components of vector N
  *
  */
-void get_normal(double Px, double Py, double Pz, double* Nx, double* Ny, double* Nz)
+void get_normal(AppState* appState, double Px, double Py, double Pz, double* Nx, double* Ny, double* Nz)
 {
-  *Nx = RepeatedDistanceEstimator(Px + HalfMinimumDistance, Py, Pz) - RepeatedDistanceEstimator(Px - HalfMinimumDistance, Py, Pz);
-  *Ny = RepeatedDistanceEstimator(Px, Py + HalfMinimumDistance, Pz) - RepeatedDistanceEstimator(Px, Py - HalfMinimumDistance, Pz);
-  *Nz = RepeatedDistanceEstimator(Px, Py, Pz + HalfMinimumDistance) - RepeatedDistanceEstimator(Px, Py, Pz - HalfMinimumDistance);
+  *Nx = RepeatedDistanceEstimator(Px + appState->HalfMinimumDistance, Py, Pz) -
+        RepeatedDistanceEstimator(Px - appState->HalfMinimumDistance, Py, Pz);
+  *Ny = RepeatedDistanceEstimator(Px, Py + appState->HalfMinimumDistance, Pz) -
+        RepeatedDistanceEstimator(Px, Py - appState->HalfMinimumDistance, Pz);
+  *Nz = RepeatedDistanceEstimator(Px, Py, Pz + appState->HalfMinimumDistance) -
+        RepeatedDistanceEstimator(Px, Py, Pz - appState->HalfMinimumDistance);
 
-  normalize(&(*Nx), &(*Ny), &(*Nz));
+  normalize(Nx, Ny, Nz);
 }
 
 /*
  *
- * raymarch(P, D) - ray marching from point P in direction D
+ * raymarch(AppState, P, D) - ray marching from point P in direction D
  *
+ * AppState - application state configuration
  * Px, Py, Pz - coordinates of point P
  * Dx, Dy, Dz - components of vector N
  *
  * Returns distance to found point; if nothing is found, returns -1.
  *
  */
-double raymarch(double Px, double Py, double Pz, double Dx, double Dy, double Dz)
+double raymarch(AppState* appState, double Px, double Py, double Pz, double Dx, double Dy, double Dz)
 {
-  double totalDistance = 0.0;
+  double totalDistance;
   double distance;
 
   unsigned int steps;
@@ -119,7 +128,9 @@ double raymarch(double Px, double Py, double Pz, double Dx, double Dy, double Dz
   double Py_;
   double Pz_;
 
-  for (steps = 0; steps < MaximumRaySteps; steps += 1) {
+  totalDistance = 0.0;
+
+  for (steps = 0; steps < appState->MaximumRaySteps; steps += 1) {
     Px_ = Px + totalDistance * Dx;
     Py_ = Py + totalDistance * Dy;
     Pz_ = Pz + totalDistance * Dz;
@@ -127,7 +138,7 @@ double raymarch(double Px, double Py, double Pz, double Dx, double Dy, double Dz
     distance = RepeatedDistanceEstimator(Px_, Py_, Pz_, &DistanceEstimator);
     totalDistance += distance;
 
-    if (distance < MinimumDistance) {
+    if (distance < appState->MinimumDistance) {
       return totalDistance;
     }
   }
@@ -137,16 +148,12 @@ double raymarch(double Px, double Py, double Pz, double Dx, double Dy, double Dz
 
 void generateFractal(AppState* appState)
 {
-  unsigned int i = 0;
+  unsigned int fractalIdx;
 
   double totalDistance;
 
   unsigned int x;
   unsigned int y;
-
-  double temp_coef;
-
-  double temp_clr_R, temp_clr_G, temp_clr_B;
 
   double cam_Px, cam_Py, cam_Pz;
 
@@ -155,17 +162,17 @@ void generateFractal(AppState* appState)
   double Nx, Ny, Nz;
 
   appState->camera->get_P(&cam_Px, &cam_Py, &cam_Pz);
-  appState->camera->cache__get_3d_point__constants(&(appState->wMandel), &(appState->hMandel));
+  appState->camera->cache__get_3d_point__constants(appState->wMandel, appState->hMandel);
+
+  // Index for our 1D fractal image array.
+  fractalIdx = 0;
 
   for (y = 0; y < appState->hMandel; y += 1) {
     // printf("y = %d (of %d)\n", y, appState->hMandel);
 
     for (x = 0; x < appState->wMandel; x += 1) {
       // Calculate 3D point in image plane.
-      appState->camera->get_3d_point(
-        &x, &y,
-        &Px, &Py, &Pz
-      );
+      appState->camera->get_3d_point(x, y, &Px, &Py, &Pz);
 
 
       // Calculate direction for ray marching.
@@ -177,14 +184,14 @@ void generateFractal(AppState* appState)
 
 
       // Ray marching.
-      totalDistance = raymarch(Px, Py, Pz, Dx, Dy, Dz);
+      totalDistance = raymarch(appState, Px, Py, Pz, Dx, Dy, Dz);
 
 
+      // Update normal vector for current point.
       if (totalDistance == -1) {
-        appState->arrayMandel[i] = 0;
-        appState->arrayMandel[i + 1] = 0;
-        appState->arrayMandel[i + 2] = 0;
-        appState->arrayMandel[i + 3] = 255;
+        Nx = 0.0;
+        Ny = 0.0;
+        Nz = 0.0;
       } else {
         // Calculate 3D point of fractal.
         Px += totalDistance * Dx;
@@ -193,53 +200,17 @@ void generateFractal(AppState* appState)
 
 
         // Get normal vector for 3D point of fractal.
-        get_normal(Px, Py, Pz, &Nx, &Ny, &Nz);
-
-
-        // Get a color for the 3D point.
-        temp_coef = max_double(0.0, Nx * appState->LightSrc_x + Ny * appState->LightSrc_y + Nz * appState->LightSrc_z);
-
-        temp_clr_R = appState->clr_R_ambient + appState->clr_R_diffuse * temp_coef;
-        temp_clr_G = appState->clr_G_ambient + appState->clr_G_diffuse * temp_coef;
-        temp_clr_B = appState->clr_B_ambient + appState->clr_B_diffuse * temp_coef;
-
-        temp_coef = 20.0 * MinimumDistance * totalDistance;
-
-        temp_clr_R = temp_clr_R / (temp_coef + temp_clr_R);
-        temp_clr_G = temp_clr_G / (temp_coef + temp_clr_G);
-        temp_clr_B = temp_clr_B / (temp_coef + temp_clr_B);
-
-        temp_coef = 1.0 / (totalDistance - 1.0);
-
-        temp_clr_R = temp_coef * (pow(totalDistance, temp_clr_R) - 1.0);
-        temp_clr_G = temp_coef * (pow(totalDistance, temp_clr_G) - 1.0);
-        temp_clr_B = temp_coef * (pow(totalDistance, temp_clr_B) - 1.0);
-
-        if (temp_clr_R < 0) {
-          temp_clr_R = 0;
-        } else if (temp_clr_R > 1.0) {
-          temp_clr_R = 1.0;
-        }
-        if (temp_clr_G < 0) {
-          temp_clr_G = 0;
-        } else if (temp_clr_G > 1.0) {
-          temp_clr_G = 1.0;
-        }
-        if (temp_clr_B < 0) {
-          temp_clr_B = 0;
-        } else if (temp_clr_B > 1.0) {
-          temp_clr_B = 1.0;
-        }
-
-
-        // Set the image pixel color.
-        appState->arrayMandel[i] = (unsigned int)(255.0 * temp_clr_R);
-        appState->arrayMandel[i + 1] = (unsigned int)(255.0 * temp_clr_G);
-        appState->arrayMandel[i + 2] = (unsigned int)(255.0 * temp_clr_B);
-        appState->arrayMandel[i + 3] = 255;
+        get_normal(appState, Px, Py, Pz, &Nx, &Ny, &Nz);
       }
 
-      i += 4;
+
+      // Color our 2D pixel.
+      simple_color_scheme2(appState, totalDistance, fractalIdx, Nx, Ny, Nz);
+
+
+      // Increase fractal array index by 4 (because each 3D pixel is
+      // represented by 4 color components; RGBA).
+      fractalIdx += 4;
     }
   }
 }
