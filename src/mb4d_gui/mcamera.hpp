@@ -87,7 +87,6 @@ class MCamera {
 
     void get_3d_point(unsigned int*, unsigned int*, double*, double*, double*);
     void get_P(double*, double*, double*);
-    void normalize(double*, double*, double*);
 
     // Constructor. Initialize all private members.
     MCamera(void);

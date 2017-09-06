@@ -105,7 +105,7 @@ add_executable(mb4d_gui
   mb4d_gui/test_opencl.cpp
   mb4d_gui/threads_test.cpp
   mb4d_gui/mandelbulb.cpp
-  mb4d_gui/vec3_math.cpp
+  mb4d_gui/utils.cpp
 
 )
 

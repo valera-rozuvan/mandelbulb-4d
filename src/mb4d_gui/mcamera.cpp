@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "mcamera.hpp"
+#include "utils.hpp"
 
 const double PI_ = 3.14159265358979323846;
 
@@ -108,7 +109,7 @@ void MCamera::calculate_RIGHT(void) {
   this->RIGHTy = -1.0 * this->UPz * this->Lx + this->UPx * this->Lz;
   this->RIGHTz = -1.0 * this->UPx * this->Ly + this->UPy * this->Lx;
 
-  this->normalize(&this->RIGHTx, &this->RIGHTy, &this->RIGHTz);
+  normalize(&this->RIGHTx, &this->RIGHTy, &this->RIGHTz);
 }
 
 void MCamera::calculate_CIMGP(void) {
@@ -138,14 +139,6 @@ void MCamera::recalculate_internals(void) {
   this->calculate_IMGP_dim();
   this->caluclate_TL();
   this->caluclate_AR();
-}
-
-void MCamera::normalize(double* x, double* y, double* z) {
-  double length = sqrt((*x) * (*x) + (*y) * (*y) + (*z) * (*z));
-
-  *x = (*x) / length;
-  *y = (*y) / length;
-  *z = (*z) / length;
 }
 
 void MCamera::cache__get_3d_point__constants(const unsigned int* width, const unsigned int* height) {

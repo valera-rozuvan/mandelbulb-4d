@@ -2,37 +2,12 @@
 #include <stdio.h>
 #include <math.h>
 #include "mcamera.hpp"
+#include "utils.hpp"
 #include "mandelbulb.hpp"
-#include "vec3_math.hpp"
 
-const int MaximumRaySteps = 320;
+const unsigned int MaximumRaySteps = 320;
 const double MinimumDistance = 0.001;
 const double HalfMinimumDistance = 0.0005;
-
-double max_double(double a, double b)
-{
-  if (a > b) {
-    return a;
-  }
-
-  return b;
-}
-
-void normalize(double* x, double* y, double* z) {
-  double length = sqrt((*x) * (*x) + (*y) * (*y) + (*z) * (*z));
-
-  *x /= length;
-  *y /= length;
-  *z /= length;
-}
-
-void normalize(vec3_t* P) {
-  double length = sqrt((*P)[0] * (*P)[0] + (*P)[1] * (*P)[1] + (*P)[2] * (*P)[2]);
-
-  (*P)[0] /= length;
-  (*P)[1] /= length;
-  (*P)[2] /= length;
-}
 
 // const double R = 5.0;
 //
@@ -47,7 +22,8 @@ const double bailout = 13.7;
 const double Power = 42.08642;
 const double fractalIters = 1000;
 
-double DistanceEstimator(double xx, double yy, double zz) {
+double DistanceEstimator(double xx, double yy, double zz)
+{
   unsigned int i = 0;
 
   double zX = xx;
@@ -87,46 +63,68 @@ double DistanceEstimator(double xx, double yy, double zz) {
   return 0.5 * log(r) * r / dr;
 }
 
-double mod(double a, double N) {
-  return a - N * floor(a / N);
+double RepeatedDistanceEstimator(double Px, double Py, double Pz, double (*DE)(double, double, double))
+{
+  Px = mod(Px, 6.0) - 3.0;
+  Py = mod(Py, 6.0) - 3.0;
+  Pz = mod(Pz, 6.0) - 3.0;
+
+  return (*DE)(Px, Py, Pz);
 }
 
-double RepeatedDistanceEstimator(double xx, double yy, double zz) {
-    xx = mod(xx, 6.0) - 3.0;
-    yy = mod(yy, 6.0) - 3.0;
-    zz = mod(zz, 6.0) - 3.0;
+double RepeatedDistanceEstimator(double Px, double Py, double Pz)
+{
+  Px = mod(Px, 6.0) - 3.0;
+  Py = mod(Py, 6.0) - 3.0;
+  Pz = mod(Pz, 6.0) - 3.0;
 
-    return DistanceEstimator(xx, yy, zz);
+  return DistanceEstimator(Px, Py, Pz);
 }
 
-void get_normal(vec3_t* from, vec3_t* direction, double totalDistance, vec3_t* normal_v) {
-  double Px = (*from)[0] + totalDistance * ((*direction)[0]);
-  double Py = (*from)[1] + totalDistance * ((*direction)[1]);
-  double Pz = (*from)[2] + totalDistance * ((*direction)[2]);
+/*
+ *
+ * get_normal(P, N) - calculates normal vector N at point P
+ *
+ * Px, Py, Pz - coordinates of point P
+ * Nx, Ny, Nz - components of vector N
+ *
+ */
+void get_normal(double Px, double Py, double Pz, double* Nx, double* Ny, double* Nz)
+{
+  *Nx = RepeatedDistanceEstimator(Px + HalfMinimumDistance, Py, Pz) - RepeatedDistanceEstimator(Px - HalfMinimumDistance, Py, Pz);
+  *Ny = RepeatedDistanceEstimator(Px, Py + HalfMinimumDistance, Pz) - RepeatedDistanceEstimator(Px, Py - HalfMinimumDistance, Pz);
+  *Nz = RepeatedDistanceEstimator(Px, Py, Pz + HalfMinimumDistance) - RepeatedDistanceEstimator(Px, Py, Pz - HalfMinimumDistance);
 
-  (*normal_v)[0] = RepeatedDistanceEstimator(Px + HalfMinimumDistance, Py, Pz) - RepeatedDistanceEstimator(Px - HalfMinimumDistance, Py, Pz);
-  (*normal_v)[1] = RepeatedDistanceEstimator(Px, Py + HalfMinimumDistance, Pz) - RepeatedDistanceEstimator(Px, Py - HalfMinimumDistance, Pz);
-  (*normal_v)[2] = RepeatedDistanceEstimator(Px, Py, Pz + HalfMinimumDistance) - RepeatedDistanceEstimator(Px, Py, Pz - HalfMinimumDistance);
-
-  normalize(&(*normal_v));
+  normalize(&(*Nx), &(*Ny), &(*Nz));
 }
 
-double raymarch(vec3_t* from, vec3_t* direction)
+/*
+ *
+ * raymarch(P, D) - ray marching from point P in direction D
+ *
+ * Px, Py, Pz - coordinates of point P
+ * Dx, Dy, Dz - components of vector N
+ *
+ * Returns distance to found point; if nothing is found, returns -1.
+ *
+ */
+double raymarch(double Px, double Py, double Pz, double Dx, double Dy, double Dz)
 {
   double totalDistance = 0.0;
-  double distance = 0.0;
-  unsigned int steps = 0;
+  double distance;
 
-  double Px = 0.0;
-  double Py = 0.0;
-  double Pz = 0.0;
+  unsigned int steps;
+
+  double Px_;
+  double Py_;
+  double Pz_;
 
   for (steps = 0; steps < MaximumRaySteps; steps += 1) {
-    Px = (*from)[0] + totalDistance * ((*direction)[0]);
-    Py = (*from)[1] + totalDistance * ((*direction)[1]);
-    Pz = (*from)[2] + totalDistance * ((*direction)[2]);
+    Px_ = Px + totalDistance * Dx;
+    Py_ = Py + totalDistance * Dy;
+    Pz_ = Pz + totalDistance * Dz;
 
-    distance = RepeatedDistanceEstimator(Px, Py, Pz);
+    distance = RepeatedDistanceEstimator(Px_, Py_, Pz_, &DistanceEstimator);
     totalDistance += distance;
 
     if (distance < MinimumDistance) {
@@ -137,62 +135,50 @@ double raymarch(vec3_t* from, vec3_t* direction)
   return -1.0;
 }
 
-void generateFractal(
-  AppState* appState
-) {
-  double totalDistance = 0;
-
+void generateFractal(AppState* appState)
+{
   unsigned int i = 0;
-  unsigned int x = 0;
-  unsigned int y = 0;
 
-  double LightSrc_x = -23.0;
-  double LightSrc_y = 17.0;
-  double LightSrc_z = 12.0;
+  double totalDistance;
 
-  double temp_coef = 0.0;
+  unsigned int x;
+  unsigned int y;
 
-  normalize(&LightSrc_x, &LightSrc_y, &LightSrc_z);
+  double temp_coef;
 
-  double clr_R_ambient = 0.019607843137255;
-  double clr_G_ambient = 0.145098039215686;
-  double clr_B_ambient = 0.376470588235294;
+  double temp_clr_R, temp_clr_G, temp_clr_B;
 
-  double clr_R_diffuse = 0.349019607843137;
-  double clr_G_diffuse = 0.694117647058824;
-  double clr_B_diffuse = 0.905882352941176;
+  double cam_Px, cam_Py, cam_Pz;
 
-  double temp_clr_R = 0.0;
-  double temp_clr_G = 0.0;
-  double temp_clr_B = 0.0;
+  double Px, Py, Pz;
+  double Dx, Dy, Dz;
+  double Nx, Ny, Nz;
 
-  double camera_point_x = 0.0;
-  double camera_point_y = 0.0;
-  double camera_point_z = 0.0;
-
-  vec3_t point = vec3_create(NULL);
-  vec3_t direction = vec3_create(NULL);
-  vec3_t normal_v = vec3_create(NULL);
-
-  appState->camera->get_P(&camera_point_x, &camera_point_y, &camera_point_z);
+  appState->camera->get_P(&cam_Px, &cam_Py, &cam_Pz);
   appState->camera->cache__get_3d_point__constants(&(appState->wMandel), &(appState->hMandel));
 
   for (y = 0; y < appState->hMandel; y += 1) {
     // printf("y = %d (of %d)\n", y, appState->hMandel);
 
     for (x = 0; x < appState->wMandel; x += 1) {
+      // Calculate 3D point in image plane.
       appState->camera->get_3d_point(
         &x, &y,
-        &point[0], &point[1], &point[2]
+        &Px, &Py, &Pz
       );
 
-      direction[0] = point[0] - camera_point_x;
-      direction[1] = point[1] - camera_point_y;
-      direction[2] = point[2] - camera_point_z;
 
-      normalize(&direction);
+      // Calculate direction for ray marching.
+      Dx = Px - cam_Px;
+      Dy = Py - cam_Py;
+      Dz = Pz - cam_Pz;
 
-      totalDistance = raymarch(&point, &direction);
+      normalize(&Dx, &Dy, &Dz);
+
+
+      // Ray marching.
+      totalDistance = raymarch(Px, Py, Pz, Dx, Dy, Dz);
+
 
       if (totalDistance == -1) {
         appState->arrayMandel[i] = 0;
@@ -200,13 +186,22 @@ void generateFractal(
         appState->arrayMandel[i + 2] = 0;
         appState->arrayMandel[i + 3] = 255;
       } else {
-        get_normal(&point, &direction, totalDistance, &normal_v);
+        // Calculate 3D point of fractal.
+        Px += totalDistance * Dx;
+        Py += totalDistance * Dy;
+        Pz += totalDistance * Dz;
 
-        temp_coef = max_double(0.0, normal_v[0] * LightSrc_x + normal_v[1] * LightSrc_y + normal_v[2] * LightSrc_z);
 
-        temp_clr_R = clr_R_ambient + clr_R_diffuse * temp_coef;
-        temp_clr_G = clr_G_ambient + clr_G_diffuse * temp_coef;
-        temp_clr_B = clr_B_ambient + clr_B_diffuse * temp_coef;
+        // Get normal vector for 3D point of fractal.
+        get_normal(Px, Py, Pz, &Nx, &Ny, &Nz);
+
+
+        // Get a color for the 3D point.
+        temp_coef = max_double(0.0, Nx * appState->LightSrc_x + Ny * appState->LightSrc_y + Nz * appState->LightSrc_z);
+
+        temp_clr_R = appState->clr_R_ambient + appState->clr_R_diffuse * temp_coef;
+        temp_clr_G = appState->clr_G_ambient + appState->clr_G_diffuse * temp_coef;
+        temp_clr_B = appState->clr_B_ambient + appState->clr_B_diffuse * temp_coef;
 
         temp_coef = 20.0 * MinimumDistance * totalDistance;
 
@@ -236,6 +231,8 @@ void generateFractal(
           temp_clr_B = 1.0;
         }
 
+
+        // Set the image pixel color.
         appState->arrayMandel[i] = (unsigned int)(255.0 * temp_clr_R);
         appState->arrayMandel[i + 1] = (unsigned int)(255.0 * temp_clr_G);
         appState->arrayMandel[i + 2] = (unsigned int)(255.0 * temp_clr_B);
@@ -245,8 +242,4 @@ void generateFractal(
       i += 4;
     }
   }
-
-  vec3_delete(normal_v);
-  vec3_delete(direction);
-  vec3_delete(point);
 }

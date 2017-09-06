@@ -9,6 +9,18 @@ class AppState {
   public:
     bool is_generating;
 
+    double LightSrc_x;
+    double LightSrc_y;
+    double LightSrc_z;
+
+    double clr_R_ambient;
+    double clr_G_ambient;
+    double clr_B_ambient;
+
+    double clr_R_diffuse;
+    double clr_G_diffuse;
+    double clr_B_diffuse;
+
     unsigned char* arrayMandel;
 
     unsigned int wMandel;
