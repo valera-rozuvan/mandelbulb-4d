@@ -137,7 +137,7 @@ void generate_fractal(AppState* appState)
       simple_color_scheme2(appState, totalDistance, fractalIdx, Nx, Ny, Nz);
 
 
-      // Increase fractal array index by 4 (because each 3D pixel is
+      // Increase fractal array index by 4 (because each 2D pixel is
       // represented by 4 color components; RGBA).
       fractalIdx += 4;
     }
