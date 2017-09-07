@@ -46,7 +46,7 @@ include_directories(
 
   external/glfw-3.2.1/include/GLFW/
 
-  external/glew-1.13.0/include/
+  external/glew-2.1.0/include/
 
   external/nuklear-1.40.8/
 
@@ -64,7 +64,7 @@ set(ALL_LIBS
 
   glfw
 
-  GLEW_1130
+  GLEW_2100
 
   OpenCL::OpenCL
 
