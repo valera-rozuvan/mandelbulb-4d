@@ -2,6 +2,8 @@
 
 State-of-the-art renderer, fine tuned to produce highly realistic visuals of arbitrary complex fractal 3D worlds
 
+![Mandelbulb 4D v0.0.5](img/screenshot_v0.0.5.png)
+
 
 ## Introduction
 
