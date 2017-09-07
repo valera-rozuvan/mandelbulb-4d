@@ -4,10 +4,17 @@
 #include <stdbool.h>
 #include "parallel.hpp"
 #include "mcamera.hpp"
+#include "de_params/simple_mandelbulb_de_params.hpp"
 
 class AppState {
   public:
     bool is_generating;
+
+    double dark_color_coeff;
+
+    double (*DE)(AppState*, double, double, double);
+
+    Simple_mandelbulb_de_params* simple_mandelbulb_de_params;
 
     unsigned int MaximumRaySteps;
     double MinimumDistance;

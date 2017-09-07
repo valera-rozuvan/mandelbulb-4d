@@ -104,9 +104,11 @@ add_executable(mb4d_gui
   mb4d_gui/test64bit.cpp
   mb4d_gui/test_opencl.cpp
   mb4d_gui/threads_test.cpp
-  mb4d_gui/mandelbulb.cpp
+  mb4d_gui/generate_fractal.cpp
   mb4d_gui/utils.cpp
   mb4d_gui/color.cpp
+  mb4d_gui/distance_estimators.cpp
+  mb4d_gui/de_params/simple_mandelbulb_de_params.cpp
 
 )
 

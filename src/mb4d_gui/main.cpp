@@ -11,7 +11,7 @@
 #include "test_opencl.hpp"
 #include "threads_test.hpp"
 #include "mcamera.hpp"
-#include "mandelbulb.hpp"
+#include "generate_fractal.hpp"
 
 #include "app_state.hpp"
 
@@ -60,16 +60,9 @@ int main(void)
     fprintf(stderr, "OpenCL test failed.\n");
   }
 
-  appState->camera->set_Px(-2.0);
-  appState->camera->set_Pz(5.5);
-  appState->camera->set_Py(-0.3);
-  appState->camera->set_F(0.8);
-  appState->camera->set_beta(35.0);
-  appState->camera->recalculate_internals();
-
   fprintf(stdout, "Generating fractal image, please wait ...\n");
   clock_t begin = clock();
-  generateFractal(appState);
+  generate_fractal(appState);
   clock_t end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   fprintf(stdout, "Done. Elapsed time: %f seconds.\n", time_spent);

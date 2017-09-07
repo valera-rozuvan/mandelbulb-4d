@@ -78,7 +78,7 @@ void simple_color_scheme2(
     temp_clr_G = appState->clr_G_ambient + appState->clr_G_diffuse * temp_coef;
     temp_clr_B = appState->clr_B_ambient + appState->clr_B_diffuse * temp_coef;
 
-    temp_coef = 0.02 * totalDistance;
+    temp_coef = appState->dark_color_coeff * totalDistance;
 
     temp_clr_R = temp_clr_R / (temp_coef + temp_clr_R);
     temp_clr_G = temp_clr_G / (temp_coef + temp_clr_G);

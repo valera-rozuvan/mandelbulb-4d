@@ -1,89 +1,10 @@
 #include <cstddef>
 #include <stdio.h>
-#include <math.h>
 #include "mcamera.hpp"
 #include "utils.hpp"
 #include "color.hpp"
-#include "mandelbulb.hpp"
-
-// const double R = 5.0;
-//
-// double DistanceEstimator(double x, double y, double z)
-// {
-//   double length = sqrt(x * x + y * y + z * z);
-//
-//   return max_double(0.0, length - R);
-// }
-
-const double bailout = 13.7;
-const double Power = 42.08642;
-const double fractalIters = 1000;
-
-double DistanceEstimator(double Px, double Py, double Pz)
-{
-  double zX;
-  double zY;
-  double zZ;
-
-  double dr;
-
-  unsigned int i;
-
-  double theta;
-  double phi;
-  double zr;
-
-  double r;
-
-  dr = 1.0;
-
-  zX = Px;
-  zY = Py;
-  zZ = Pz;
-
-  for (i = 0; i < fractalIters; i += 1) {
-    r = sqrt(zX * zX + zY * zY + zZ * zZ);
-
-    if (r > bailout) {
-      break;
-    }
-
-    // Convert to polar coordinates.
-    theta = acos(zZ / r);
-    phi = atan2(zY, zX);
-    dr =  pow(r, Power - 1.0) * Power * dr + 1.0;
-
-    // Scale and rotate the point.
-    zr = pow(r, Power);
-    theta = theta * Power;
-    phi = phi * Power;
-
-    // Convert back to Cartesian coordinates.
-    zX = zr * sin(theta) * cos(phi) + Px;
-    zY = zr * sin(phi) * sin(theta) + Py;
-    zZ = zr * cos(theta) + Pz;
-  }
-
-  return 0.5 * log(r) * r / dr;
-}
-
-double RepeatedDistanceEstimator(double Px, double Py, double Pz, double (*DE)(double, double, double))
-{
-  Px = mod(Px, 6.0) - 3.0;
-  Py = mod(Py, 6.0) - 3.0;
-  Pz = mod(Pz, 6.0) - 3.0;
-
-  return (*DE)(Px, Py, Pz);
-}
-
-double RepeatedDistanceEstimator(double Px, double Py, double Pz)
-{
-  Px = mod(Px, 6.0) - 3.0;
-  Py = mod(Py, 6.0) - 3.0;
-  Pz = mod(Pz, 6.0) - 3.0;
-
-  return DistanceEstimator(Px, Py, Pz);
-}
+#include "distance_estimators.hpp"
+#include "generate_fractal.hpp"
 
 /*
  *
@@ -94,14 +15,18 @@ double RepeatedDistanceEstimator(double Px, double Py, double Pz)
  * Nx, Ny, Nz - components of vector N
  *
  */
-void get_normal(AppState* appState, double Px, double Py, double Pz, double* Nx, double* Ny, double* Nz)
+void get_normal(
+  AppState* appState,
+  double Px, double Py, double Pz,
+  double* Nx, double* Ny, double* Nz
+)
 {
-  *Nx = RepeatedDistanceEstimator(Px + appState->HalfMinimumDistance, Py, Pz) -
-        RepeatedDistanceEstimator(Px - appState->HalfMinimumDistance, Py, Pz);
-  *Ny = RepeatedDistanceEstimator(Px, Py + appState->HalfMinimumDistance, Pz) -
-        RepeatedDistanceEstimator(Px, Py - appState->HalfMinimumDistance, Pz);
-  *Nz = RepeatedDistanceEstimator(Px, Py, Pz + appState->HalfMinimumDistance) -
-        RepeatedDistanceEstimator(Px, Py, Pz - appState->HalfMinimumDistance);
+  *Nx = (*(appState->DE))(appState, Px + appState->HalfMinimumDistance, Py, Pz) -
+        (*(appState->DE))(appState, Px - appState->HalfMinimumDistance, Py, Pz);
+  *Ny = (*(appState->DE))(appState, Px, Py + appState->HalfMinimumDistance, Pz) -
+        (*(appState->DE))(appState, Px, Py - appState->HalfMinimumDistance, Pz);
+  *Nz = (*(appState->DE))(appState, Px, Py, Pz + appState->HalfMinimumDistance) -
+        (*(appState->DE))(appState, Px, Py, Pz - appState->HalfMinimumDistance);
 
   normalize(Nx, Ny, Nz);
 }
@@ -117,7 +42,11 @@ void get_normal(AppState* appState, double Px, double Py, double Pz, double* Nx,
  * Returns distance to found point; if nothing is found, returns -1.
  *
  */
-double raymarch(AppState* appState, double Px, double Py, double Pz, double Dx, double Dy, double Dz)
+double raymarch(
+  AppState* appState,
+  double Px, double Py, double Pz,
+  double Dx, double Dy, double Dz
+)
 {
   double totalDistance;
   double distance;
@@ -135,7 +64,7 @@ double raymarch(AppState* appState, double Px, double Py, double Pz, double Dx, 
     Py_ = Py + totalDistance * Dy;
     Pz_ = Pz + totalDistance * Dz;
 
-    distance = RepeatedDistanceEstimator(Px_, Py_, Pz_, &DistanceEstimator);
+    distance = (*(appState->DE))(appState, Px_, Py_, Pz_);
     totalDistance += distance;
 
     if (distance < appState->MinimumDistance) {
@@ -146,7 +75,7 @@ double raymarch(AppState* appState, double Px, double Py, double Pz, double Dx, 
   return -1.0;
 }
 
-void generateFractal(AppState* appState)
+void generate_fractal(AppState* appState)
 {
   unsigned int fractalIdx;
 
