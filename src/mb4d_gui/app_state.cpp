@@ -76,5 +76,6 @@ AppState::~AppState(void)
 
   delete this->parallel;
   delete this->arrayMandel;
+  delete this->simple_mandelbulb_de_params;
   delete this->camera;
 }

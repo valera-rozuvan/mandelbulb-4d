@@ -41,8 +41,18 @@ endif()
 add_subdirectory (external)
 
 
+# Include Boost library
+
+set(Boost_NO_SYSTEM_PATHS TRUE)
+set(BOOST_ROOT external/boost_1_65_1)
+set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}")
+set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/stage/lib")
+
+
 
 include_directories(
+
+  ${BOOST_INCLUDE_DIRS}
 
   external/glfw-3.2.1/include/GLFW/
 
@@ -108,6 +118,9 @@ add_executable(mb4d_gui
   mb4d_gui/utils.cpp
   mb4d_gui/color.cpp
   mb4d_gui/distance_estimators.cpp
+  mb4d_gui/work_queue.cpp
+  mb4d_gui/work_queue_item.cpp
+
   mb4d_gui/de_params/simple_mandelbulb_de_params.cpp
 
 )
