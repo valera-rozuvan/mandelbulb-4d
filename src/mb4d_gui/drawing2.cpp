@@ -11,11 +11,23 @@ void draw_mandelbulb(
   struct nk_command_buffer *canvas;
   struct nk_image myImage;
   struct nk_rect total_space;
-
+  float ar_wnd;
+  float old_val;
   const struct nk_color grid_color = nk_rgba(255, 255, 255, 255);
 
   canvas = nk_window_get_canvas(ctx);
   total_space = nk_window_get_content_region(ctx);
+  ar_wnd = ((float)total_space.w) / ((float)total_space.h);
+
+  if (ar_wnd < appState->aspect_ratio_mandel) {
+    old_val = total_space.h;
+    total_space.h = (total_space.w * ((float)appState->hMandel)) / ((float)appState->wMandel);
+    total_space.y += 0.5 * (old_val - total_space.h);
+  } else if (ar_wnd > appState->aspect_ratio_mandel) {
+    old_val = total_space.w;
+    total_space.w = (total_space.h * ((float)appState->wMandel)) / ((float)appState->hMandel);
+    total_space.x += 0.5 * (old_val - total_space.w);
+  }
 
   // use a texture
   glBindTexture(GL_TEXTURE_2D, texture);

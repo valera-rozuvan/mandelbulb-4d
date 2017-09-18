@@ -1,5 +1,5 @@
 /*
- Nuklear - 1.40.8 - public domain
+ Nuklear - 2.00.0 - public domain
  no warranty implied; use at your own risk.
  authored from 2015-2017 by Micha Mettke
 
@@ -1351,20 +1351,23 @@ NK_API int nk_item_is_any_active(struct nk_context*);
  *  IMPORTANT: only call this function between calls `nk_begin_xxx` and `nk_end`
  *  Parameters:
  *      @ctx must point to an previously initialized `nk_context` struct
+ *      @name of the window to modify both position and size
  *      @bounds points to a `nk_rect` struct with the new position and size of currently active window */
-NK_API void nk_window_set_bounds(struct nk_context*, struct nk_rect bounds);
+NK_API void nk_window_set_bounds(struct nk_context*, const char *name, struct nk_rect bounds);
 /*  nk_window_set_position - updates position of the currently processed window
  *  IMPORTANT: only call this function between calls `nk_begin_xxx` and `nk_end`
  *  Parameters:
  *      @ctx must point to an previously initialized `nk_context` struct
+ *      @name of the window to modify position of
  *      @pos points to a `nk_vec2` struct with the new position of currently active window */
-NK_API void nk_window_set_position(struct nk_context*, struct nk_vec2 pos);
+NK_API void nk_window_set_position(struct nk_context*, const char *name, struct nk_vec2 pos);
 /*  nk_window_set_size - updates size of the currently processed window
  *  IMPORTANT: only call this function between calls `nk_begin_xxx` and `nk_end`
  *  Parameters:
  *      @ctx must point to an previously initialized `nk_context` struct
- *      @bounds points to a `nk_vec2` struct with the new size of currently active window */
-NK_API void nk_window_set_size(struct nk_context*, struct nk_vec2);
+ *      @name of the window to modify size of
+ *      @size points to a `nk_vec2` struct with the new size of currently active window */
+NK_API void nk_window_set_size(struct nk_context*, const char *name, struct nk_vec2);
 /*  nk_window_set_focus - sets the window with given name as active
  *  Parameters:
  *      @ctx must point to an previously initialized `nk_context` struct
@@ -4240,7 +4243,7 @@ template<typename T> struct nk_alignof{struct Big {T x; char c;}; enum {
 #define NK_ALIGNOF(t) ((char*)(&((struct {char c; t _h;}*)0)->_h) - (char*)0)
 #endif
 
-#endif /* NK_H_ */
+#endif /* NK_NUKLEAR_H_ */
 /*
  * ==============================================================
  *
@@ -17372,8 +17375,12 @@ nk_clear(struct nk_context *ctx)
         /* remove hotness from hidden or closed windows*/
         if (((iter->flags & NK_WINDOW_HIDDEN) ||
             (iter->flags & NK_WINDOW_CLOSED)) &&
-            iter == ctx->active)
-            ctx->active = iter->next;
+            iter == ctx->active) {
+            ctx->active = iter->prev;
+            ctx->end = iter->prev;
+            if (ctx->active)
+                ctx->active->flags &= ~NK_WINDOW_ROM;
+        }
 
         /* free unused popup windows */
         if (iter->popup.win && iter->popup.win->seq != ctx->seq) {
@@ -18468,7 +18475,7 @@ nk_insert_window(struct nk_context *ctx, struct nk_window *win,
         ctx->active = ctx->end;
         ctx->end->flags &= ~(nk_flags)NK_WINDOW_ROM;
     } else {
-        ctx->end->flags |= NK_WINDOW_ROM;
+        /*ctx->end->flags |= NK_WINDOW_ROM;*/
         ctx->begin->prev = win;
         win->next = ctx->begin;
         win->prev = 0;
@@ -18574,8 +18581,10 @@ nk_begin_titled(struct nk_context *ctx, const char *name, const char *title,
          *      provided demo backends). */
         NK_ASSERT(win->seq != ctx->seq);
         win->seq = ctx->seq;
-        if (!ctx->active && !(win->flags & NK_WINDOW_HIDDEN))
+        if (!ctx->active && !(win->flags & NK_WINDOW_HIDDEN)) {
             ctx->active = win;
+            ctx->end = win;
+        }
     }
     if (win->flags & NK_WINDOW_HIDDEN) {
         ctx->current = win;
@@ -18939,29 +18948,40 @@ nk_window_close(struct nk_context *ctx, const char *name)
 }
 
 NK_API void
-nk_window_set_bounds(struct nk_context *ctx, struct nk_rect bounds)
+nk_window_set_bounds(struct nk_context *ctx,
+    const char *name, struct nk_rect bounds)
 {
-    NK_ASSERT(ctx); NK_ASSERT(ctx->current);
-    if (!ctx || !ctx->current) return;
-    ctx->current->bounds = bounds;
+    struct nk_window *win;
+    NK_ASSERT(ctx);
+    if (!ctx) return;
+    win = nk_window_find(ctx, name);
+    if (!win) return;
+    NK_ASSERT(ctx->current != win && "You cannot update a currently in procecss window");
+    win->bounds = bounds;
 }
 
 NK_API void
-nk_window_set_position(struct nk_context *ctx, struct nk_vec2 pos)
+nk_window_set_position(struct nk_context *ctx,
+    const char *name, struct nk_vec2 pos)
 {
-    NK_ASSERT(ctx); NK_ASSERT(ctx->current);
-    if (!ctx || !ctx->current) return;
-    ctx->current->bounds.x = pos.x;
-    ctx->current->bounds.y = pos.y;
+    struct nk_rect bounds;
+    bounds.x = pos.x;
+    bounds.y = pos.y;
+    bounds.w = ctx->current->bounds.w;
+    bounds.h = ctx->current->bounds.h;
+    nk_window_set_bounds(ctx, name, bounds);
 }
 
 NK_API void
-nk_window_set_size(struct nk_context *ctx, struct nk_vec2 size)
+nk_window_set_size(struct nk_context *ctx,
+    const char *name, struct nk_vec2 size)
 {
-    NK_ASSERT(ctx); NK_ASSERT(ctx->current);
-    if (!ctx || !ctx->current) return;
-    ctx->current->bounds.w = size.x;
-    ctx->current->bounds.h = size.y;
+    struct nk_rect bounds;
+    bounds.x = ctx->current->bounds.x;
+    bounds.y = ctx->current->bounds.y;
+    bounds.w = size.x;
+    bounds.h = size.y;
+    nk_window_set_bounds(ctx, name, bounds);
 }
 
 NK_API void
@@ -21294,7 +21314,9 @@ nk_edit_buffer(struct nk_context *ctx, nk_flags flags,
         }
         if (flags & NK_EDIT_CLIPBOARD)
             edit->clip = ctx->clip;
-    }
+        edit->active = win->edit.active;
+    } else edit->active = nk_false;
+    edit->mode = win->edit.mode;
 
     filter = (!filter) ? nk_filter_default: filter;
     prev_state = (unsigned char)edit->active;

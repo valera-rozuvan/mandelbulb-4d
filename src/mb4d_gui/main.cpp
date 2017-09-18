@@ -39,7 +39,7 @@ int main(void)
   unsigned int texture2;
   float bg[4];
 
-  AppState* appState = new AppState(200, 150);
+  AppState* appState = NULL;
 
   /* Nuklear window stuff */
   static GLFWwindow* win;
@@ -60,12 +60,16 @@ int main(void)
     fprintf(stderr, "OpenCL test failed.\n");
   }
 
-  fprintf(stdout, "Generating fractal image, please wait ...\n");
-  clock_t begin = clock();
-  generate_fractal(appState);
-  clock_t end = clock();
-  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  fprintf(stdout, "Done. Elapsed time: %f seconds.\n", time_spent);
+  appState = new AppState(200, 150);
+
+  appState->parallel->start();
+
+  // fprintf(stdout, "Generating fractal image, please wait ...\n");
+  // clock_t begin = clock();
+  // generate_fractal(appState);
+  // clock_t end = clock();
+  // time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  // fprintf(stdout, "Done. Elapsed time: %f seconds.\n", time_spent);
 
   /* GLFW */
   glfwSetErrorCallback(error_callback);

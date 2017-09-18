@@ -8,14 +8,13 @@ class WorkQueue {
 
     WorkQueueItem* workQueueItems;
   public:
-    WorkQueueItem* getRandomQueueItem(void);
-    void addNewQueueItem(double Ax, double Ay, double Bx, double By);
-    // void removeQueueItem(WorkQueueItem* workQueueItem);
+    void initNewQueueItem(double, double, double, double);
+    void push_item(WorkQueueItem*);
+
     void clearQueue(void);
 
-    void test_func(void);
-
-    // unsigned int getNumberOfQueueItems(void);
+    WorkQueueItem* pop_nth_item(const unsigned int);
+    WorkQueueItem* pop_rnd_item(void);
 
     WorkQueue(void);
     ~WorkQueue(void);

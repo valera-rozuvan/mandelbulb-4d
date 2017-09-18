@@ -37,6 +37,8 @@ class AppState {
     unsigned int wMandel;
     unsigned int hMandel;
 
+    double aspect_ratio_mandel;
+
     Parallel* parallel;
     MCamera* camera;
 

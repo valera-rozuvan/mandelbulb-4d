@@ -5,6 +5,7 @@
 WorkQueueItem::WorkQueueItem(double Ax_, double Ay_, double Bx_, double By_)
 {
   this->isFirstItem = false;
+
   this->prevItem = NULL;
   this->nextItem = NULL;
 
@@ -22,5 +23,6 @@ WorkQueueItem::WorkQueueItem(double Ax_, double Ay_, double Bx_, double By_)
 WorkQueueItem::~WorkQueueItem(void)
 {
   fprintf(stdout, "WorkQueueItem::~WorkQueueItem destructor.\n");
+
   delete this->image_piece;
 }

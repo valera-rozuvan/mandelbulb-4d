@@ -58,7 +58,7 @@ include_directories(
 
   external/glew-2.1.0/include/
 
-  external/nuklear-1.40.8/
+  external/nuklear-2.00.0/
 
   external/rand48/
 

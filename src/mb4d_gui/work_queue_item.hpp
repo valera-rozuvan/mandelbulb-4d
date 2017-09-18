@@ -21,7 +21,6 @@ class WorkQueueItem {
     unsigned int imgHeight;
 
     WorkQueueItem(double Ax_, double Ay_, double Bx_, double By_);
-
     ~WorkQueueItem(void);
 };
 
