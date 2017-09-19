@@ -76,8 +76,15 @@ AppState::~AppState(void)
 {
   fprintf(stdout, "AppState::~AppState destructor.\n");
 
+  fprintf(stdout, "--> calling Parallel destructor...\n");
   delete this->parallel;
-  delete this->arrayMandel;
+
+  fprintf(stdout, "--> deleting arrayMandel array...\n");
+  free(this->arrayMandel);
+
+  fprintf(stdout, "--> calling Simple_mandelbulb_de_params destructor...\n");
   delete this->simple_mandelbulb_de_params;
+
+  fprintf(stdout, "--> calling Camera destructor...\n");
   delete this->camera;
 }

@@ -60,9 +60,9 @@ int main(void)
     fprintf(stderr, "OpenCL test failed.\n");
   }
 
-  appState = new AppState(200, 150);
+  appState = new AppState(800, 600);
 
-  appState->parallel->start();
+  appState->parallel->createStartThread();
 
   // fprintf(stdout, "Generating fractal image, please wait ...\n");
   // clock_t begin = clock();

@@ -48,4 +48,4 @@ class AppState {
     ~AppState(void);
 };
 
-#endif
+#endif // APP_STATE_H

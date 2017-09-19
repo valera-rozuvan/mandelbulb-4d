@@ -8,30 +8,35 @@
 class AppState;
 
 class Parallel {
-  WorkQueue* todo_work;
-  WorkQueue* done_work;
-  AppState* appState;
+  private:
+    WorkQueue* todoWork;
+    WorkQueue* doneWork;
+    AppState* appState;
 
-  pthread_t* startT;
-  pthread_t* stopT;
-  pthread_t* workersT;
+    pthread_t* startT;
+    pthread_t* stopT;
+    pthread_t* workersT;
 
-  bool startThreadRunning;
-  bool stopThreadRunning;
+    bool startThreadRunning;
+    bool workerThreadsRunning;
+    bool stopThreadRunning;
 
-  unsigned int num_threads;
-
-  pthread_mutex_t start_mutex;
-  pthread_mutex_t stop_mutex;
-  pthread_mutex_t todo_work_mutex;
-  pthread_mutex_t done_work_mutex;
+    unsigned int numThreads;
 
   public:
-    void start(void);
-    void startThreadEnd(void);
+    pthread_mutex_t startMutex;
+    pthread_mutex_t stopMutex;
+    pthread_mutex_t todoWorkMutex;
+    pthread_mutex_t doneWorkMutex;
+
+    void createStartThread(void);
+    void startThreadCleanup(void);
+
+    void createWorkers(void);
+    void stopWorkers(void);
 
     Parallel(AppState*, unsigned int);
     ~Parallel(void);
 };
 
-#endif
+#endif // PARALLEL_HPP
