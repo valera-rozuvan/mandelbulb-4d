@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <stdio.h>
+#include <unistd.h>
 #include "mcamera.hpp"
 #include "utils.hpp"
 #include "color.hpp"
@@ -75,7 +76,12 @@ double raymarch(
   return -1.0;
 }
 
-void generate_fractal(AppState* appState)
+unsigned int getFractalIdx(AppState* appState, unsigned int x, unsigned int y)
+{
+  return appState->wMandel * y * 4 + x * 4;
+}
+
+void generate_fractal(AppState* appState, WorkQueueItem* workItem)
 {
   unsigned int fractalIdx;
 
@@ -90,16 +96,24 @@ void generate_fractal(AppState* appState)
   double Dx, Dy, Dz;
   double Nx, Ny, Nz;
 
+  unsigned int Ax = workItem->Ax;
+  unsigned int Bx = workItem->Bx;
+  unsigned int Ay = workItem->Ay;
+  unsigned int By = workItem->By;
+
   appState->camera->get_P(&cam_Px, &cam_Py, &cam_Pz);
-  appState->camera->cache__get_3d_point__constants(appState->wMandel, appState->hMandel);
+  // appState->camera->cache__get_3d_point__constants(appState->wMandel, appState->hMandel);
 
   // Index for our 1D fractal image array.
-  fractalIdx = 0;
+  // fractalIdx = 0;
 
-  for (y = 0; y < appState->hMandel; y += 1) {
+  for (y = Ay; y <= By; y += 1) {
     // printf("y = %d (of %d)\n", y, appState->hMandel);
+    usleep(1);
 
-    for (x = 0; x < appState->wMandel; x += 1) {
+    for (x = Ax; x <= Bx; x += 1) {
+      fractalIdx = getFractalIdx(appState, x, y);
+
       // Calculate 3D point in image plane.
       appState->camera->get_3d_point(x, y, &Px, &Py, &Pz);
 
@@ -139,7 +153,7 @@ void generate_fractal(AppState* appState)
 
       // Increase fractal array index by 4 (because each 2D pixel is
       // represented by 4 color components; RGBA).
-      fractalIdx += 4;
+      // fractalIdx += 4;
     }
   }
 }

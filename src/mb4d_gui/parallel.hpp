@@ -9,8 +9,6 @@ class AppState;
 
 class Parallel {
   private:
-    WorkQueue* todoWork;
-    WorkQueue* doneWork;
     AppState* appState;
 
     pthread_t* startT;
@@ -24,10 +22,15 @@ class Parallel {
     unsigned int numThreads;
 
   public:
+    WorkQueue* todoWork;
+    WorkQueue* doneWork;
+
     pthread_mutex_t startMutex;
-    pthread_mutex_t stopMutex;
+    pthread_mutex_t workerMutex;
     pthread_mutex_t todoWorkMutex;
     pthread_mutex_t doneWorkMutex;
+
+    bool selfDestructing;
 
     void createStartThread(void);
     void startThreadCleanup(void);

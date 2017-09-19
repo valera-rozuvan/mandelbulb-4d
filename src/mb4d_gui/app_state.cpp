@@ -61,6 +61,8 @@ AppState::AppState(const unsigned int wMandel_, const unsigned int hMandel_)
   this->camera->set_beta(35.0);
   this->camera->recalculate_internals();
 
+  this->camera->cache__get_3d_point__constants(this->wMandel, this->hMandel);
+
   this->simple_mandelbulb_de_params = new Simple_mandelbulb_de_params();
 
   // this->simple_mandelbulb_de_params->bailout = 13.7;

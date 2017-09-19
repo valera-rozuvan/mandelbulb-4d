@@ -2,9 +2,11 @@
 #include "utils.hpp"
 #include "work_queue.hpp"
 
-void WorkQueue::initNewQueueItem(double Ax, double Ay, double Bx, double By)
+void WorkQueue::initNewQueueItem(
+  unsigned int Ax, unsigned int Bx, unsigned int Ay, unsigned int By
+)
 {
-  WorkQueueItem* newQueueItem = new WorkQueueItem(Ax, Ay, Bx, By);
+  WorkQueueItem* newQueueItem = new WorkQueueItem(Ax, Bx, Ay, By);
 
   this->push_item(newQueueItem);
 }

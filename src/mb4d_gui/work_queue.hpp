@@ -8,7 +8,7 @@ class WorkQueue {
 
     WorkQueueItem* workQueueItems;
   public:
-    void initNewQueueItem(double, double, double, double);
+    void initNewQueueItem(unsigned int, unsigned int, unsigned int, unsigned int);
     void push_item(WorkQueueItem*);
 
     void clearQueue(void);

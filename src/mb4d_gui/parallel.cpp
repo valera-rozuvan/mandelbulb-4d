@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "app_state.hpp"
 #include "parallel.hpp"
 #include "generate_fractal.hpp"
@@ -10,6 +11,25 @@ void* workerFunction(void* appState_)
 
   // Do work.
 
+  WorkQueueItem* nextWorkItem;
+
+  do {
+    pthread_mutex_lock(&(appState->parallel->todoWorkMutex));
+    nextWorkItem = appState->parallel->todoWork->pop_rnd_item();
+    pthread_mutex_unlock(&(appState->parallel->todoWorkMutex));
+
+    if (nextWorkItem != NULL) {
+      generate_fractal(appState, nextWorkItem);
+
+      pthread_mutex_lock(&(appState->parallel->doneWorkMutex));
+      appState->parallel->doneWork->push_item(nextWorkItem);
+      pthread_mutex_unlock(&(appState->parallel->doneWorkMutex));
+    }
+
+    usleep(1);
+
+  } while (nextWorkItem != NULL);
+
   pthread_exit((void*) 0);
 
   return NULL;
@@ -18,6 +38,18 @@ void* workerFunction(void* appState_)
 void* startThreadFunc(void* appState_)
 {
   AppState* appState = (AppState*)appState_;
+
+  unsigned int i;
+  unsigned int j;
+
+  for (i = 0; i < 16; i += 1) {
+    for (j = 0; j < 12; j += 1) {
+      appState->parallel->todoWork->initNewQueueItem(
+        i * 100, i * 100 + 99,
+        j * 100, j * 100 + 99
+      );
+    }
+  }
 
   appState->parallel->createWorkers();
   appState->parallel->startThreadCleanup();
@@ -31,7 +63,17 @@ void Parallel::createStartThread(void)
 {
   pthread_attr_t attr;
 
+  if (this->selfDestructing == true) {
+    return;
+  }
+
   pthread_mutex_lock(&(this->startMutex));
+
+  if (this->selfDestructing == true) {
+    pthread_mutex_unlock(&(this->startMutex));
+
+    return;
+  }
 
   if ((this->startThreadRunning == false) && (this->workerThreadsRunning == false)) {
     this->startThreadRunning = true;
@@ -66,6 +108,18 @@ void Parallel::createWorkers(void)
   unsigned int i;
   pthread_attr_t attr;
 
+  if (this->selfDestructing == true) {
+    return;
+  }
+
+  pthread_mutex_lock(&(this->workerMutex));
+
+  if (this->selfDestructing == true) {
+    pthread_mutex_unlock(&(this->workerMutex));
+
+    return;
+  }
+
   this->workerThreadsRunning = true;
 
   this->workersT = (pthread_t *)calloc(sizeof(pthread_t) * this->numThreads, sizeof(pthread_t));
@@ -78,13 +132,17 @@ void Parallel::createWorkers(void)
   }
 
   pthread_attr_destroy(&attr);
+
+  pthread_mutex_unlock(&(this->workerMutex));
 }
 
 void Parallel::stopWorkers(void)
 {
   unsigned int i;
 
-  if ((this->workerThreadsRunning == false) || (this->workersT == NULL)) {
+  pthread_mutex_lock(&(this->workerMutex));
+
+  if (this->workerThreadsRunning == false) {
     return;
   }
 
@@ -94,6 +152,8 @@ void Parallel::stopWorkers(void)
   }
 
   this->workerThreadsRunning = false;
+
+  pthread_mutex_unlock(&(this->workerMutex));
 }
 
 Parallel::Parallel(AppState* appState_, unsigned int numThreads_)
@@ -105,13 +165,14 @@ Parallel::Parallel(AppState* appState_, unsigned int numThreads_)
   this->startThreadRunning = false;
   this->stopThreadRunning = false;
   this->workerThreadsRunning = false;
+  this->selfDestructing = false;
 
   this->startT = NULL;
   this->stopT = NULL;
   this->workersT = NULL;
 
   pthread_mutex_init(&(this->startMutex), NULL);
-  pthread_mutex_init(&(this->stopMutex), NULL);
+  pthread_mutex_init(&(this->workerMutex), NULL);
   pthread_mutex_init(&(this->todoWorkMutex), NULL);
   pthread_mutex_init(&(this->doneWorkMutex), NULL);
 
@@ -133,20 +194,35 @@ Parallel::~Parallel(void)
 {
   fprintf(stdout, "Parallel::~Parallel destructor.\n");
 
+  // We need to make sure that no new Start Thread is initializing.
+  // When we are sure, set the "selfDestructing" flag to "true".
+  // This will prevent any new Start Thread from starting.
+  pthread_mutex_lock(&(this->startMutex));
+  this->selfDestructing = true;
+  pthread_mutex_unlock(&(this->startMutex));
+
+  // If some StartThread is running, we need to wait for it to exit.
+  while (this->startThreadRunning == true) {}
+
   pthread_mutex_destroy(&(this->startMutex));
-  pthread_mutex_destroy(&(this->stopMutex));
-  pthread_mutex_destroy(&(this->todoWorkMutex));
-  pthread_mutex_destroy(&(this->doneWorkMutex));
 
   if (this->startT != NULL) {
     free(this->startT);
   }
 
   this->stopWorkers();
+
+  pthread_mutex_destroy(&(this->workerMutex));
+
   if (this->workersT != NULL) {
     free(this->workersT);
   }
 
+  this->todoWork->clearQueue();
+  this->doneWork->clearQueue();
+
   delete this->doneWork;
   delete this->todoWork;
+  pthread_mutex_destroy(&(this->todoWorkMutex));
+  pthread_mutex_destroy(&(this->doneWorkMutex));
 }

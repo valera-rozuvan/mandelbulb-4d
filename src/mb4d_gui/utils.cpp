@@ -2,6 +2,7 @@
 #include "boost/random.hpp"
 #include <iostream>
 #include <ctime>
+#include <cstdlib>
 #include "utils.hpp"
 
 typedef boost::uniform_int<> NumberDistribution;
@@ -36,7 +37,7 @@ unsigned int rnd_from_range(const unsigned int rangeMin, const unsigned int rang
   NumberDistribution distribution(rangeMin, rangeMax);
   RandomNumberGenerator generator;
   Generator numberGenerator(generator, distribution);
-  generator.seed(std::time(0)); // seed with the current time
+  generator.seed(std::time(0) + (rand() % 1000) + 1); // seed with the current time
 
   return numberGenerator();
 }
