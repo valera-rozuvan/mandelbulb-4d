@@ -8,41 +8,37 @@
 
 class AppState {
   public:
-    bool is_generating;
-
-    double dark_color_coeff;
+    double darkColorCoeff;
 
     double (*DE)(AppState*, double, double, double);
 
-    Simple_mandelbulb_de_params* simple_mandelbulb_de_params;
+    SimpleMandelbulbDeParams* simpleMandelbulbDeParams;
 
-    unsigned int MaximumRaySteps;
-    double MinimumDistance;
-    double HalfMinimumDistance;
+    unsigned int maximumRaySteps;
+    double minimumDistance;
+    double halfMinimumDistance;
 
-    double LightSrc_x;
-    double LightSrc_y;
-    double LightSrc_z;
+    double lightSrcX;
+    double lightSrcY;
+    double lightSrcZ;
 
-    double clr_R_ambient;
-    double clr_G_ambient;
-    double clr_B_ambient;
+    double clrAmbientR;
+    double clrAmbientG;
+    double clrAmbientB;
 
-    double clr_R_diffuse;
-    double clr_G_diffuse;
-    double clr_B_diffuse;
+    double clrDiffuseR;
+    double clrDiffuseG;
+    double clrDiffuseB;
 
     unsigned char* arrayMandel;
 
     unsigned int wMandel;
     unsigned int hMandel;
 
-    double aspect_ratio_mandel;
+    double aspectRatioMandel;
 
     Parallel* parallel;
     MCamera* camera;
-
-    // fractal_params ??
 
     AppState(const unsigned int, const unsigned int);
     ~AppState(void);

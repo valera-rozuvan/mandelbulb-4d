@@ -2,7 +2,7 @@
 #include "work_queue_item.hpp"
 
 WorkQueueItem::WorkQueueItem(
-  unsigned int Ax_, unsigned int Bx_, unsigned int Ay_, unsigned int By_
+  unsigned int startX_, unsigned int endX_, unsigned int startY_, unsigned int endY_
 )
 {
   this->isFirstItem = false;
@@ -10,20 +10,14 @@ WorkQueueItem::WorkQueueItem(
   this->prevItem = NULL;
   this->nextItem = NULL;
 
-  this->Ax = Ax_;
-  this->Bx = Bx_;
-  this->Ay = Ay_;
-  this->By = By_;
+  this->startX = startX_;
+  this->endX = endX_;
 
-  this->imgWidth = Bx - Ax;
-  this->imgHeight = By - Ay;
-
-  // this->image_piece = (unsigned char *)calloc(sizeof(unsigned char) * this->imgWidth * this->imgHeight * 4, sizeof(unsigned char));
+  this->startY = startY_;
+  this->endY = endY_;
 }
 
 WorkQueueItem::~WorkQueueItem(void)
 {
   fprintf(stdout, "WorkQueueItem::~WorkQueueItem destructor.\n");
-
-  // delete this->image_piece;
 }

@@ -1,11 +1,12 @@
 #include <string.h>
-#include <time.h>
 
 #define NK_IMPLEMENTATION
 #include "common_nuklear_includes.hpp"
 #include <GL/glew.h>
 #include <glfw3.h>
 #include "nuklear_glfw_gl3.h"
+
+#include <time.h>
 
 #include "test64bit.hpp"
 #include "test_opencl.hpp"
@@ -35,7 +36,7 @@ static void errorCallback(int e, const char* d)
 int main(void)
 {
   int ret = 0;
-  double time_spent = 0.0;
+  double timeSpent = 0.0;
   unsigned int texture2;
   float bg[4];
 
@@ -43,7 +44,8 @@ int main(void)
 
   /* Nuklear window stuff */
   static GLFWwindow* win;
-  int width = 0, height = 0;
+  int width = 0;
+  int height = 0;
   struct nk_context* ctx;
   struct nk_color background;
 
@@ -51,9 +53,9 @@ int main(void)
   test64bitRunTest();
   test64bitFreeMem();
 
-  test_threads();
+  testThreads();
 
-  ret = test_opencl();
+  ret = testOpencl();
   if (ret == 0) {
     fprintf(stdout, "OpenCL test passed.\n");
   } else {
@@ -68,8 +70,8 @@ int main(void)
   // clock_t begin = clock();
   // generate_fractal(appState);
   // clock_t end = clock();
-  // time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  // fprintf(stdout, "Done. Elapsed time: %f seconds.\n", time_spent);
+  // timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
+  // fprintf(stdout, "Done. Elapsed time: %f seconds.\n", timeSpent);
 
   /* GLFW */
   glfwSetErrorCallback(errorCallback);

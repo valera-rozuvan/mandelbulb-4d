@@ -15,7 +15,7 @@
 #define MEM_SIZE (128)
 #define MAX_SOURCE_SIZE (0x100000)
 
-int test_opencl(void)
+int testOpencl(void)
 {
   cl_device_id device_id = NULL;
   cl_context context = NULL;
@@ -41,7 +41,7 @@ int test_opencl(void)
     return 1;
   }
 
-  FILE *fp;
+  FILE* fp;
   char fileName[] = "hello.cl";
 
   #if defined(_WIN32) || defined(WIN32)
@@ -50,7 +50,7 @@ int test_opencl(void)
   char pathSeparator[] = "/";
   #endif
 
-  char * fullPath = (char*)malloc(sizeof(char) * (strlen(cwd) + strlen(pathSeparator) + strlen(fileName) + 1));
+  char* fullPath = (char*)malloc(sizeof(char) * (strlen(cwd) + strlen(pathSeparator) + strlen(fileName) + 1));
   if(fullPath != NULL) {
     fullPath[0] = '\0';   // ensures the memory is an empty string
     strcat(fullPath, cwd);
@@ -62,20 +62,20 @@ int test_opencl(void)
     return 1;
   }
 
-  char *source_str;
-  size_t source_size;
+  char* sourceStr;
+  size_t sourceSize;
 
   fprintf(stdout, "Full path: %s\n", fullPath);
 
-  /* Load the source code containing the kernel*/
+  /* Load the source code containing the kernel */
   fp = fopen(fullPath, "r");
   if (!fp) {
     fprintf(stderr, "Failed to load kernel.\n");
 
     return 1;
   }
-  source_str = (char*)malloc(MAX_SOURCE_SIZE);
-  source_size = fread(source_str, 1, MAX_SOURCE_SIZE, fp);
+  sourceStr = (char*)malloc(MAX_SOURCE_SIZE);
+  sourceSize = fread(sourceStr, 1, MAX_SOURCE_SIZE, fp);
   fclose(fp);
 
   /* Get Platform and Device Info */
@@ -100,7 +100,7 @@ int test_opencl(void)
 
   /* Create Kernel Program from the source */
   program = clCreateProgramWithSource(
-    context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret
+    context, 1, (const char**)&sourceStr, (const size_t*)&sourceSize, &ret
   );
 
   /* Build Kernel Program */
@@ -110,7 +110,7 @@ int test_opencl(void)
   kernel = clCreateKernel(program, "hello", &ret);
 
   /* Set OpenCL Kernel Parameters */
-  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&memobj);
+  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void*)&memobj);
 
   /* Execute OpenCL Kernel */
   ret = clEnqueueTask(command_queue, kernel, 0, NULL,NULL);
@@ -133,7 +133,7 @@ int test_opencl(void)
   ret = clReleaseCommandQueue(command_queue);
   ret = clReleaseContext(context);
 
-  free(source_str);
+  free(sourceStr);
 
   return 0;
 }

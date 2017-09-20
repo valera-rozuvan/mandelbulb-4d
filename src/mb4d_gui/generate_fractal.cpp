@@ -9,24 +9,24 @@
  * getNormal(AppState, P, N) - calculates normal vector N at point P
  *
  * AppState - application state configuration
- * Px, Py, Pz - coordinates of point P
- * Nx, Ny, Nz - components of vector N
+ * pX, pY, pZ - coordinates of point P
+ * nX, nY, nZ - components of vector N
  *
  */
 void getNormal(
-  AppState* appState,
-  double Px, double Py, double Pz,
-  double* Nx, double* Ny, double* Nz
+  AppState* const appState,
+  const double pX, const double pY, const double pZ,
+  double* const nX, double* const nY, double* const nZ
 )
 {
-  *Nx = (*(appState->DE))(appState, Px + appState->HalfMinimumDistance, Py, Pz) -
-        (*(appState->DE))(appState, Px - appState->HalfMinimumDistance, Py, Pz);
-  *Ny = (*(appState->DE))(appState, Px, Py + appState->HalfMinimumDistance, Pz) -
-        (*(appState->DE))(appState, Px, Py - appState->HalfMinimumDistance, Pz);
-  *Nz = (*(appState->DE))(appState, Px, Py, Pz + appState->HalfMinimumDistance) -
-        (*(appState->DE))(appState, Px, Py, Pz - appState->HalfMinimumDistance);
+  *nX = (*(appState->DE))(appState, pX + appState->halfMinimumDistance, pY, pZ) -
+        (*(appState->DE))(appState, pX - appState->halfMinimumDistance, pY, pZ);
+  *nY = (*(appState->DE))(appState, pX, pY + appState->halfMinimumDistance, pZ) -
+        (*(appState->DE))(appState, pX, pY - appState->halfMinimumDistance, pZ);
+  *nZ = (*(appState->DE))(appState, pX, pY, pZ + appState->halfMinimumDistance) -
+        (*(appState->DE))(appState, pX, pY, pZ - appState->halfMinimumDistance);
 
-  normalize(Nx, Ny, Nz);
+  normalize(nX, nY, nZ);
 }
 
 /*
@@ -34,16 +34,16 @@ void getNormal(
  * raymarch(AppState, P, D) - ray marching from point P in direction D
  *
  * AppState - application state configuration
- * Px, Py, Pz - coordinates of point P
- * Dx, Dy, Dz - components of vector N
+ * pX, pY, pZ - coordinates of point P
+ * dX, dY, dZ - components of vector D
  *
  * Returns distance to found point; if nothing is found, returns -1.
  *
  */
 double raymarch(
-  AppState* appState,
-  double Px, double Py, double Pz,
-  double Dx, double Dy, double Dz
+  AppState* const appState,
+  const double pX, const double pY, const double pZ,
+  const double dX, const double dY, const double dZ
 )
 {
   double totalDistance;
@@ -51,21 +51,21 @@ double raymarch(
 
   unsigned int steps;
 
-  double Px_;
-  double Py_;
-  double Pz_;
+  double pX_;
+  double pY_;
+  double pZ_;
 
   totalDistance = 0.0;
 
-  for (steps = 0; steps < appState->MaximumRaySteps; steps += 1) {
-    Px_ = Px + totalDistance * Dx;
-    Py_ = Py + totalDistance * Dy;
-    Pz_ = Pz + totalDistance * Dz;
+  for (steps = 0; steps < appState->maximumRaySteps; steps += 1) {
+    pX_ = pX + totalDistance * dX;
+    pY_ = pY + totalDistance * dY;
+    pZ_ = pZ + totalDistance * dZ;
 
-    distance = (*(appState->DE))(appState, Px_, Py_, Pz_);
+    distance = (*(appState->DE))(appState, pX_, pY_, pZ_);
     totalDistance += distance;
 
-    if (distance < appState->MinimumDistance) {
+    if (distance < appState->minimumDistance) {
       return totalDistance;
     }
   }
@@ -73,12 +73,12 @@ double raymarch(
   return -1.0;
 }
 
-unsigned int getFractalIdx(AppState* appState, unsigned int x, unsigned int y)
+unsigned int getFractalIdx(AppState const * const appState, const unsigned int x, const unsigned int y)
 {
-  return appState->wMandel * y * 4 + x * 4;
+  return 4 * (appState->wMandel * y + x);
 }
 
-void generateFractal(AppState* appState, WorkQueueItem* workItem)
+void generateFractal(AppState* const appState, WorkQueueItem const * const workItem)
 {
   unsigned int fractalIdx;
 
@@ -87,70 +87,69 @@ void generateFractal(AppState* appState, WorkQueueItem* workItem)
   unsigned int x;
   unsigned int y;
 
-  double cam_Px, cam_Py, cam_Pz;
+  double camPx, camPy, camPz;
 
-  double Px, Py, Pz;
-  double Dx, Dy, Dz;
-  double Nx, Ny, Nz;
+  double pX, pY, pZ;
+  double dX, dY, dZ;
+  double nX, nY, nZ;
 
-  unsigned int Ax = workItem->Ax;
-  unsigned int Bx = workItem->Bx;
-  unsigned int Ay = workItem->Ay;
-  unsigned int By = workItem->By;
+  unsigned int startX = workItem->startX;
+  unsigned int endX = workItem->endX;
 
-  appState->camera->get_P(&cam_Px, &cam_Py, &cam_Pz);
+  unsigned int startY = workItem->startY;
+  unsigned int endY = workItem->endY;
 
-  for (y = Ay; y <= By; y += 1) {
+  appState->camera->get_P(&camPx, &camPy, &camPz);
 
-    for (x = Ax; x <= Bx; x += 1) {
+  for (y = startY; y <= endY; y += 1) {
+
+    for (x = startX; x <= endX; x += 1) {
+      // If parallel instance is terminating, return back to the thread
+      // worker function.
       if (appState->parallel->selfDestructing == true) {
         return;
       }
+
 
       // Calculate fractal array 1D offset.
       fractalIdx = getFractalIdx(appState, x, y);
 
 
       // Calculate 3D point in image plane.
-      appState->camera->get_3d_point(x, y, &Px, &Py, &Pz);
+      appState->camera->get_3d_point(x, y, &pX, &pY, &pZ);
 
 
       // Calculate direction for ray marching.
-      Dx = Px - cam_Px;
-      Dy = Py - cam_Py;
-      Dz = Pz - cam_Pz;
+      dX = pX - camPx;
+      dY = pY - camPy;
+      dZ = pZ - camPz;
 
-      normalize(&Dx, &Dy, &Dz);
+      normalize(&dX, &dY, &dZ);
 
 
       // Ray marching.
-      totalDistance = raymarch(appState, Px, Py, Pz, Dx, Dy, Dz);
+      totalDistance = raymarch(appState, pX, pY, pZ, dX, dY, dZ);
 
 
       // Update normal vector for current point.
       if (totalDistance == -1) {
-        Nx = 0.0;
-        Ny = 0.0;
-        Nz = 0.0;
+        nX = 0.0;
+        nY = 0.0;
+        nZ = 0.0;
       } else {
         // Calculate 3D point of fractal.
-        Px += totalDistance * Dx;
-        Py += totalDistance * Dy;
-        Pz += totalDistance * Dz;
+        pX += totalDistance * dX;
+        pY += totalDistance * dY;
+        pZ += totalDistance * dZ;
 
 
         // Get normal vector for 3D point of fractal.
-        getNormal(appState, Px, Py, Pz, &Nx, &Ny, &Nz);
+        getNormal(appState, pX, pY, pZ, &nX, &nY, &nZ);
       }
 
 
       // Color our 2D pixel.
-      simpleColorScheme2(appState, totalDistance, fractalIdx, Nx, Ny, Nz);
-
-
-      // Increase fractal array index by 4 (because each 2D pixel is
-      // represented by 4 color components; RGBA).
-      // fractalIdx += 4;
+      simpleColorScheme2(appState, totalDistance, fractalIdx, nX, nY, nZ);
     }
   }
 }

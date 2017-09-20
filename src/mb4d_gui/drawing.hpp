@@ -1,6 +1,6 @@
 #ifndef DRAWING_HPP
 #define DRAWING_HPP
 
-void draw_line(struct nk_context *ctx, unsigned int *texture);
+void drawLine(struct nk_context*, unsigned int*);
 
 #endif // DRAWING_HPP

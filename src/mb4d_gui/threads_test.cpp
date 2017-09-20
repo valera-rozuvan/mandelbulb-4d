@@ -6,22 +6,22 @@
 
 #define NUM_THREADS 4
 
-void* perform_work(void* argument)
+void* performWork(void* argument)
 {
-  int passed_in_value;
+  int passedInValue;
 
-  passed_in_value = *((int*)argument);
-  printf( "Hello from thread with argument %d!\n", passed_in_value );
+  passedInValue = *((int*)argument);
+  printf("Hello from thread with argument %d!\n", passedInValue);
 
   return NULL;
 }
 
-void test_threads(void)
+void testThreads(void)
 {
   pthread_t threads[NUM_THREADS];
 
-  int thread_args[NUM_THREADS];
-  int result_code;
+  int threadArgs[NUM_THREADS];
+  int resultCode;
 
   unsigned index;
 
@@ -29,18 +29,18 @@ void test_threads(void)
 
   // create all threads one by one
   for (index = 0; index < NUM_THREADS; index += 1) {
-    thread_args[index] = index;
+    threadArgs[index] = index;
     printf("Creating thread %d.\n", index);
 
-    result_code = pthread_create(&threads[index], NULL, perform_work, &thread_args[index]);
-    assert(!result_code);
+    resultCode = pthread_create(&threads[index], NULL, performWork, &threadArgs[index]);
+    assert(!resultCode);
   }
 
   // wait for each thread to complete
   for (index = 0; index < NUM_THREADS; index += 1) {
     // Block until thread 'index' completes.
-    result_code = pthread_join(threads[index], NULL);
-    assert(!result_code);
+    resultCode = pthread_join(threads[index], NULL);
+    assert(!resultCode);
 
     printf("Thread %d has completed.\n", index);
   }

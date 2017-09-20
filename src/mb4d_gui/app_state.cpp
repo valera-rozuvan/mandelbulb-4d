@@ -6,41 +6,39 @@
 
 AppState::AppState(const unsigned int wMandel_, const unsigned int hMandel_)
 {
-  this->is_generating = false;
-
-  // this->DE = simpleSphereDe;
+  // this->DE = &simpleSphereDe;
   this->DE = &repeatedMandelbulbDe;
   // this->DE = &simpleMandelbulbDe;
 
-  // this->MaximumRaySteps = 320;
-  // this->MinimumDistance = 0.001;
-  // this->HalfMinimumDistance = 0.0005;
+  // this->maximumRaySteps = 320;
+  // this->minimumDistance = 0.001;
+  // this->halfMinimumDistance = 0.0005;
 
-  this->MaximumRaySteps = 500;
-  this->MinimumDistance = 0.001;
-  this->HalfMinimumDistance = 0.0005;
+  this->maximumRaySteps = 500;
+  this->minimumDistance = 0.001;
+  this->halfMinimumDistance = 0.0005;
 
-  this->LightSrc_x = -23.0;
-  this->LightSrc_y = 17.0;
-  this->LightSrc_z = 12.0;
+  this->lightSrcX = -23.0;
+  this->lightSrcY = 17.0;
+  this->lightSrcZ = 12.0;
 
-  normalize(&(this->LightSrc_x), &(this->LightSrc_y), &(this->LightSrc_z));
+  normalize(&(this->lightSrcX), &(this->lightSrcY), &(this->lightSrcZ));
 
-  // this->dark_color_coeff = 0.02;
-  this->dark_color_coeff = 0.03;
+  // this->darkColorCoeff = 0.02;
+  this->darkColorCoeff = 0.03;
 
-  this->clr_R_ambient = 0.019607843137255;
-  this->clr_G_ambient = 0.145098039215686;
-  this->clr_B_ambient = 0.376470588235294;
+  this->clrAmbientR = 0.019607843137255;
+  this->clrAmbientG = 0.145098039215686;
+  this->clrAmbientB = 0.376470588235294;
 
-  this->clr_R_diffuse = 0.349019607843137;
-  this->clr_G_diffuse = 0.694117647058824;
-  this->clr_B_diffuse = 0.905882352941176;
+  this->clrDiffuseR = 0.349019607843137;
+  this->clrDiffuseG = 0.694117647058824;
+  this->clrDiffuseB = 0.905882352941176;
 
   this->wMandel = wMandel_;
   this->hMandel = hMandel_;
 
-  this->aspect_ratio_mandel = ((double)this->wMandel) / ((double)this->hMandel);
+  this->aspectRatioMandel = ((double)this->wMandel) / ((double)this->hMandel);
 
   this->arrayMandel = (unsigned char *)calloc(sizeof(unsigned char) * this->wMandel * this->hMandel * 4, sizeof(unsigned char));
 
@@ -63,15 +61,15 @@ AppState::AppState(const unsigned int wMandel_, const unsigned int hMandel_)
 
   this->camera->cache__get_3d_point__constants(this->wMandel, this->hMandel);
 
-  this->simple_mandelbulb_de_params = new Simple_mandelbulb_de_params();
+  this->simpleMandelbulbDeParams = new SimpleMandelbulbDeParams();
 
-  // this->simple_mandelbulb_de_params->bailout = 13.7;
-  // this->simple_mandelbulb_de_params->Power = 42.08642;
-  // this->simple_mandelbulb_de_params->fractalIters = 1000;
+  // this->simpleMandelbulbDeParams->bailout = 13.7;
+  // this->simpleMandelbulbDeParams->power = 42.08642;
+  // this->simpleMandelbulbDeParams->fractalIters = 1000;
 
-  this->simple_mandelbulb_de_params->bailout = 2;
-  this->simple_mandelbulb_de_params->Power = 8.0;
-  this->simple_mandelbulb_de_params->fractalIters = 100;
+  this->simpleMandelbulbDeParams->bailout = 2;
+  this->simpleMandelbulbDeParams->power = 8.0;
+  this->simpleMandelbulbDeParams->fractalIters = 100;
 }
 
 AppState::~AppState(void)
@@ -84,8 +82,8 @@ AppState::~AppState(void)
   fprintf(stdout, "--> deleting arrayMandel array...\n");
   free(this->arrayMandel);
 
-  fprintf(stdout, "--> calling Simple_mandelbulb_de_params destructor...\n");
-  delete this->simple_mandelbulb_de_params;
+  fprintf(stdout, "--> calling SimpleMandelbulbDeParams destructor...\n");
+  delete this->simpleMandelbulbDeParams;
 
   fprintf(stdout, "--> calling Camera destructor...\n");
   delete this->camera;

@@ -3,6 +3,11 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+
+#if defined(_WIN32) || defined(WIN32)
+#include "rand48.h"
+#endif
+
 #include "utils.hpp"
 
 typedef boost::uniform_int<> NumberDistribution;
@@ -40,4 +45,36 @@ unsigned int rndFromRange(const unsigned int rangeMin, const unsigned int rangeM
   generator.seed(std::time(0) + (rand() % 1000) + 1); // seed with the current time
 
   return numberGenerator();
+}
+
+// Taken from:
+//   http://www.exploringbinary.com/ten-ways-to-check-if-an-integer-is-a-power-of-two-in-c/
+bool isPowerOfTwo(uint64_t x)
+{
+  return ((x != 0) && ((x & (~x + 1)) == x));
+}
+
+// Taken from:
+//   https://stackoverflow.com/a/20177601
+uint64_t urand64(void)
+{
+  uint64_t hi = lrand48();
+  uint64_t md = lrand48();
+  uint64_t lo = lrand48();
+
+  return (hi << 42) + (md << 21) + lo;
+}
+
+uint64_t uint64UniformRandom(uint64_t low, uint64_t high)
+{
+  static const uint64_t M = ~(uint64_t)0;
+
+  uint64_t range = high - low;
+  uint64_t toExclude = isPowerOfTwo(range) ? 0 : M % range + 1;
+  uint64_t res;
+
+  // Eliminate `toExclude` possible values from consideration.
+  while ((res = urand64()) < toExclude) {}
+
+  return low + res % range;
 }

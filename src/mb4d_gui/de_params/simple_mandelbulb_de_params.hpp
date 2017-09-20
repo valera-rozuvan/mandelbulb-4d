@@ -1,13 +1,13 @@
 #ifndef SIMPLE_MANDELBULB_DE_PARAMS_HPP
 #define SIMPLE_MANDELBULB_DE_PARAMS_HPP
 
-class Simple_mandelbulb_de_params {
+class SimpleMandelbulbDeParams {
   public:
     double bailout;
-    double Power;
+    double power;
     double fractalIters;
 
-    Simple_mandelbulb_de_params(void);
+    SimpleMandelbulbDeParams(void);
 };
 
 #endif // SIMPLE_MANDELBULB_DE_PARAMS_HPP

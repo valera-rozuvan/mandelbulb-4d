@@ -10,15 +10,11 @@ class WorkQueueItem {
     WorkQueueItem* prevItem;
     WorkQueueItem* nextItem;
 
-    unsigned int Ax;
-    unsigned int Ay;
-    unsigned int Bx;
-    unsigned int By;
+    unsigned int startX;
+    unsigned int endX;
 
-    // unsigned char* image_piece;
-
-    unsigned int imgWidth;
-    unsigned int imgHeight;
+    unsigned int startY;
+    unsigned int endY;
 
     WorkQueueItem(unsigned int, unsigned int, unsigned int, unsigned int);
     ~WorkQueueItem(void);

@@ -6,7 +6,7 @@ void simpleColorScheme1(
   AppState* appState,
   const double totalDistance,
   const unsigned int fractalIdx,
-  const double Nx, const double Ny, const double Nz
+  const double nX, const double nY, const double nZ
 )
 {
   double tempCoef;
@@ -23,11 +23,11 @@ void simpleColorScheme1(
     appState->arrayMandel[fractalIdx + 3] = 255;
   } else {
     // Get a color for the 3D point.
-    tempCoef = maxDouble(0.0, Nx * appState->LightSrc_x + Ny * appState->LightSrc_y + Nz * appState->LightSrc_z);
+    tempCoef = maxDouble(0.0, nX * appState->lightSrcX + nY * appState->lightSrcY + nZ * appState->lightSrcZ);
 
-    tempClrR = appState->clr_R_ambient + appState->clr_R_diffuse * tempCoef;
-    tempClrG = appState->clr_G_ambient + appState->clr_G_diffuse * tempCoef;
-    tempClrB = appState->clr_B_ambient + appState->clr_B_diffuse * tempCoef;
+    tempClrR = appState->clrAmbientR + appState->clrDiffuseR * tempCoef;
+    tempClrG = appState->clrAmbientG + appState->clrDiffuseG * tempCoef;
+    tempClrB = appState->clrAmbientB + appState->clrDiffuseB * tempCoef;
 
 
     // Make sure that calculated color is within a proper range.
@@ -61,7 +61,7 @@ void simpleColorScheme2(
   AppState* appState,
   const double totalDistance,
   const unsigned int fractalIdx,
-  const double Nx, const double Ny, const double Nz
+  const double nX, const double nY, const double nZ
 )
 {
   double tempCoef;
@@ -78,13 +78,13 @@ void simpleColorScheme2(
     appState->arrayMandel[fractalIdx + 3] = 255;
   } else {
     // Get a color for the 3D point.
-    tempCoef = maxDouble(0.0, Nx * appState->LightSrc_x + Ny * appState->LightSrc_y + Nz * appState->LightSrc_z);
+    tempCoef = maxDouble(0.0, nX * appState->lightSrcX + nY * appState->lightSrcY + nZ * appState->lightSrcZ);
 
-    tempClrR = appState->clr_R_ambient + appState->clr_R_diffuse * tempCoef;
-    tempClrG = appState->clr_G_ambient + appState->clr_G_diffuse * tempCoef;
-    tempClrB = appState->clr_B_ambient + appState->clr_B_diffuse * tempCoef;
+    tempClrR = appState->clrAmbientR + appState->clrDiffuseR * tempCoef;
+    tempClrG = appState->clrAmbientG + appState->clrDiffuseG * tempCoef;
+    tempClrB = appState->clrAmbientB + appState->clrDiffuseB * tempCoef;
 
-    tempCoef = appState->dark_color_coeff * totalDistance;
+    tempCoef = appState->darkColorCoeff * totalDistance;
 
     tempClrR = tempClrR / (tempCoef + tempClrR);
     tempClrG = tempClrG / (tempCoef + tempClrG);
