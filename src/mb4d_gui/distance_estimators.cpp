@@ -2,7 +2,7 @@
 #include "utils.hpp"
 #include "distance_estimators.hpp"
 
-double simple_mandelbulb_de(AppState* appState, double Px, double Py, double Pz)
+double simpleMandelbulbDe(AppState* appState, double Px, double Py, double Pz)
 {
   double zX;
   double zY;
@@ -53,20 +53,20 @@ double simple_mandelbulb_de(AppState* appState, double Px, double Py, double Pz)
   return 0.5 * log(r) * r / dr;
 }
 
-double repeated_mandelbulb_de(AppState* appState, double Px, double Py, double Pz)
+double repeatedMandelbulbDe(AppState* appState, double Px, double Py, double Pz)
 {
   Px = mod(Px, 6.0) - 3.0;
   Py = mod(Py, 6.0) - 3.0;
   Pz = mod(Pz, 6.0) - 3.0;
 
-  return simple_mandelbulb_de(appState, Px, Py, Pz);
+  return simpleMandelbulbDe(appState, Px, Py, Pz);
 }
 
 const double R = 0.7;
 
-double simple_sphere_de(AppState* appState, double Px, double Py, double Pz)
+double simpleSphereDe(AppState* appState, double Px, double Py, double Pz)
 {
   double length = sqrt(Px * Px + Py * Py + Pz * Pz);
 
-  return max_double(0.0, length - R);
+  return maxDouble(0.0, length - R);
 }

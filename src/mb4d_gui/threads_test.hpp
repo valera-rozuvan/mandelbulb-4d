@@ -3,4 +3,4 @@
 
 void test_threads(void);
 
-#endif
+#endif // THREADS_TEST_HPP

@@ -1,8 +1,8 @@
 #ifndef TEST64BIT_HPP
 #define TEST64BIT_HPP
 
-void test64bit_allocMem(void);
-void test64bit_runTest(void);
-void test64bit_freeMem(void);
+void test64bitAllocMem(void);
+void test64bitRunTest(void);
+void test64bitFreeMem(void);
 
 #endif // TEST64BIT_HPP

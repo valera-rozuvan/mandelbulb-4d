@@ -9,7 +9,7 @@ typedef boost::uniform_int<> NumberDistribution;
 typedef boost::mt19937 RandomNumberGenerator;
 typedef boost::variate_generator<RandomNumberGenerator&, NumberDistribution> Generator;
 
-double max_double(double a, double b)
+double maxDouble(double a, double b)
 {
   if (a > b) {
     return a;
@@ -32,7 +32,7 @@ double mod(double a, double N)
   return a - N * floor(a / N);
 }
 
-unsigned int rnd_from_range(const unsigned int rangeMin, const unsigned int rangeMax)
+unsigned int rndFromRange(const unsigned int rangeMin, const unsigned int rangeMax)
 {
   NumberDistribution distribution(rangeMin, rangeMax);
   RandomNumberGenerator generator;

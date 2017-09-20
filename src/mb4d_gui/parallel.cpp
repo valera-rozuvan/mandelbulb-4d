@@ -1,37 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <math.h>
 #include "app_state.hpp"
-#include "parallel.hpp"
 #include "generate_fractal.hpp"
+#include "parallel.hpp"
 
 void* workerFunction(void* appState_)
 {
   AppState* appState = (AppState*)appState_;
 
-  // Do work.
-
   WorkQueueItem* nextWorkItem;
 
   do {
     pthread_mutex_lock(&(appState->parallel->todoWorkMutex));
-    nextWorkItem = appState->parallel->todoWork->pop_rnd_item();
+    nextWorkItem = appState->parallel->todoWork->popRndItem();
     pthread_mutex_unlock(&(appState->parallel->todoWorkMutex));
 
     if (nextWorkItem != NULL) {
-      generate_fractal(appState, nextWorkItem);
+      generateFractal(appState, nextWorkItem);
 
       pthread_mutex_lock(&(appState->parallel->doneWorkMutex));
-      appState->parallel->doneWork->push_item(nextWorkItem);
+      appState->parallel->doneWork->pushItem(nextWorkItem);
       pthread_mutex_unlock(&(appState->parallel->doneWorkMutex));
     }
+  } while ((nextWorkItem != NULL) && (appState->parallel->selfDestructing == false));
 
-    usleep(1);
-
-  } while (nextWorkItem != NULL);
-
-  pthread_exit((void*) 0);
+  pthread_exit((void*)0);
 
   return NULL;
 }
@@ -40,19 +34,19 @@ void* startThreadFunc(void* appState_)
 {
   AppState* appState = (AppState*)appState_;
 
-  const unsigned int block_size = 99;
+  unsigned int block_size = appState->parallel->generationBlockSize;
 
   unsigned int i;
   unsigned int j;
 
-  unsigned int left_over_i;
-  unsigned int left_over_j;
+  unsigned int leftOverI;
+  unsigned int leftOverJ;
 
-  unsigned int i_max_floor = floor(((double)appState->wMandel) / ((double)block_size));
-  unsigned int j_max_floor = floor(((double)appState->hMandel) / ((double)block_size));
+  unsigned int iMaxFloor = floor(((double)appState->wMandel) / ((double)block_size));
+  unsigned int jMaxFloor = floor(((double)appState->hMandel) / ((double)block_size));
 
-  for (i = 0; i < i_max_floor; i += 1) {
-    for (j = 0; j < j_max_floor; j += 1) {
+  for (i = 0; i < iMaxFloor; i += 1) {
+    for (j = 0; j < jMaxFloor; j += 1) {
       appState->parallel->todoWork->initNewQueueItem(
         i * block_size, block_size * (i + 1) - 1,
         j * block_size, block_size * (j + 1) - 1
@@ -60,37 +54,37 @@ void* startThreadFunc(void* appState_)
     }
   }
 
-  left_over_i = appState->wMandel - i_max_floor * block_size;
-  if (left_over_i > 0) {
-    for (j = 0; j < j_max_floor; j += 1) {
+  leftOverI = appState->wMandel - iMaxFloor * block_size;
+  if (leftOverI > 0) {
+    for (j = 0; j < jMaxFloor; j += 1) {
       appState->parallel->todoWork->initNewQueueItem(
-        i_max_floor * block_size, i_max_floor * block_size + left_over_i  - 1,
+        iMaxFloor * block_size, iMaxFloor * block_size + leftOverI  - 1,
         j * block_size, block_size * (j + 1) - 1
       );
     }
   }
 
-  left_over_j = appState->hMandel - j_max_floor * block_size;
-  if (left_over_j > 0) {
-    for (i = 0; i < i_max_floor; i += 1) {
+  leftOverJ = appState->hMandel - jMaxFloor * block_size;
+  if (leftOverJ > 0) {
+    for (i = 0; i < iMaxFloor; i += 1) {
       appState->parallel->todoWork->initNewQueueItem(
         i * block_size, block_size * (i + 1) - 1,
-        j_max_floor * block_size, j_max_floor * block_size + left_over_j  - 1
+        jMaxFloor * block_size, jMaxFloor * block_size + leftOverJ  - 1
       );
     }
   }
 
-  if ((left_over_i > 0) && (left_over_j > 0)) {
+  if ((leftOverI > 0) && (leftOverJ > 0)) {
     appState->parallel->todoWork->initNewQueueItem(
-      i_max_floor * block_size, i_max_floor * block_size + left_over_i  - 1,
-      j_max_floor * block_size, j_max_floor * block_size + left_over_j  - 1
+      iMaxFloor * block_size, iMaxFloor * block_size + leftOverI  - 1,
+      jMaxFloor * block_size, jMaxFloor * block_size + leftOverJ  - 1
     );
   }
 
   appState->parallel->createWorkers();
   appState->parallel->startThreadCleanup();
 
-  pthread_exit((void*) 0);
+  pthread_exit((void*)0);
 
   return NULL;
 }
@@ -183,7 +177,6 @@ void Parallel::stopWorkers(void)
   }
 
   for (i = 0; i < this->numThreads; i += 1) {
-    pthread_cancel(this->workersT[i]);
     pthread_join(this->workersT[i], NULL);
   }
 
@@ -192,19 +185,23 @@ void Parallel::stopWorkers(void)
   pthread_mutex_unlock(&(this->workerMutex));
 }
 
-Parallel::Parallel(AppState* appState_, unsigned int numThreads_)
+Parallel::Parallel(
+  AppState* appState_,
+  unsigned int numThreads_,
+  unsigned int generationBlockSize_
+)
 {
   this->appState = appState_;
 
   this->numThreads = numThreads_;
 
+  this->generationBlockSize = generationBlockSize_;
+
   this->startThreadRunning = false;
-  this->stopThreadRunning = false;
   this->workerThreadsRunning = false;
   this->selfDestructing = false;
 
   this->startT = NULL;
-  this->stopT = NULL;
   this->workersT = NULL;
 
   pthread_mutex_init(&(this->startMutex), NULL);
@@ -213,17 +210,7 @@ Parallel::Parallel(AppState* appState_, unsigned int numThreads_)
   pthread_mutex_init(&(this->doneWorkMutex), NULL);
 
   this->todoWork = new WorkQueue();
-
-  // this->todoWork->initNewQueueItem(1, 2, 3, 4);
-  // this->todoWork->initNewQueueItem(20, 30, 40, 50);
-  // this->todoWork->initNewQueueItem(300, 400, 500, 600);
-
   this->doneWork = new WorkQueue();
-
-  // this->doneWork->push_item(this->todoWork->pop_rnd_item());
-  // this->doneWork->push_item(this->todoWork->pop_rnd_item());
-  // this->doneWork->push_item(this->todoWork->pop_rnd_item());
-  // this->doneWork->push_item(this->todoWork->pop_rnd_item());
 }
 
 Parallel::~Parallel(void)
@@ -259,6 +246,7 @@ Parallel::~Parallel(void)
 
   delete this->doneWork;
   delete this->todoWork;
+
   pthread_mutex_destroy(&(this->todoWorkMutex));
   pthread_mutex_destroy(&(this->doneWorkMutex));
 }

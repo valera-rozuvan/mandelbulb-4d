@@ -27,7 +27,7 @@
 #define MAX_VERTEX_BUFFER 512 * 1024
 #define MAX_ELEMENT_BUFFER 128 * 1024
 
-static void error_callback(int e, const char* d)
+static void errorCallback(int e, const char* d)
 {
   fprintf(stderr, "Error %d: %s\n", e, d);
 }
@@ -47,9 +47,9 @@ int main(void)
   struct nk_context* ctx;
   struct nk_color background;
 
-  test64bit_allocMem();
-  test64bit_runTest();
-  test64bit_freeMem();
+  test64bitAllocMem();
+  test64bitRunTest();
+  test64bitFreeMem();
 
   test_threads();
 
@@ -60,7 +60,7 @@ int main(void)
     fprintf(stderr, "OpenCL test failed.\n");
   }
 
-  appState = new AppState(800, 600);
+  appState = new AppState(256, 192);
 
   appState->parallel->createStartThread();
 
@@ -72,7 +72,7 @@ int main(void)
   // fprintf(stdout, "Done. Elapsed time: %f seconds.\n", time_spent);
 
   /* GLFW */
-  glfwSetErrorCallback(error_callback);
+  glfwSetErrorCallback(errorCallback);
   if (!glfwInit()) {
     fprintf(stdout, "ERROR: GFLW failed to initialize!\n");
     exit(1);

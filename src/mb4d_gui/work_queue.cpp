@@ -8,10 +8,10 @@ void WorkQueue::initNewQueueItem(
 {
   WorkQueueItem* newQueueItem = new WorkQueueItem(Ax, Bx, Ay, By);
 
-  this->push_item(newQueueItem);
+  this->pushItem(newQueueItem);
 }
 
-void WorkQueue::push_item(WorkQueueItem* newQueueItem)
+void WorkQueue::pushItem(WorkQueueItem* newQueueItem)
 {
   WorkQueueItem* lastItem;
   WorkQueueItem* newItem;
@@ -65,7 +65,7 @@ void WorkQueue::clearQueue(void)
   this->workQueueItems = NULL;
 }
 
-WorkQueueItem* WorkQueue::pop_nth_item(const unsigned int n)
+WorkQueueItem* WorkQueue::popNthItem(const unsigned int n)
 {
   unsigned int i;
 
@@ -122,7 +122,7 @@ WorkQueueItem* WorkQueue::pop_nth_item(const unsigned int n)
   return item_to_pop;
 }
 
-WorkQueueItem* WorkQueue::pop_rnd_item(void)
+WorkQueueItem* WorkQueue::popRndItem(void)
 {
   unsigned int item_index;
 
@@ -131,12 +131,12 @@ WorkQueueItem* WorkQueue::pop_rnd_item(void)
   }
 
   if (this->num_of_queue_items == 1) {
-    return this->pop_nth_item(0);
+    return this->popNthItem(0);
   }
 
-  item_index = rnd_from_range(0, this->num_of_queue_items - 1);
+  item_index = rndFromRange(0, this->num_of_queue_items - 1);
 
-  return this->pop_nth_item(item_index);
+  return this->popNthItem(item_index);
 }
 
 WorkQueue::WorkQueue(void)

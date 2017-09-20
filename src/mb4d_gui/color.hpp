@@ -3,7 +3,7 @@
 
 #include "app_state.hpp"
 
-void simple_color_scheme1(AppState*, double, unsigned int, double, double, double);
-void simple_color_scheme2(AppState*, double, unsigned int, double, double, double);
+void simpleColorScheme1(AppState*, const double, const unsigned int, const double, const double, const double);
+void simpleColorScheme2(AppState*, const double, const unsigned int, const double, const double, const double);
 
 #endif // COLOR_HPP

@@ -1,6 +1,3 @@
-#include <cstddef>
-#include <stdio.h>
-#include <stdlib.h>
 #include "mcamera.hpp"
 #include "utils.hpp"
 #include "color.hpp"
@@ -9,14 +6,14 @@
 
 /*
  *
- * get_normal(AppState, P, N) - calculates normal vector N at point P
+ * getNormal(AppState, P, N) - calculates normal vector N at point P
  *
  * AppState - application state configuration
  * Px, Py, Pz - coordinates of point P
  * Nx, Ny, Nz - components of vector N
  *
  */
-void get_normal(
+void getNormal(
   AppState* appState,
   double Px, double Py, double Pz,
   double* Nx, double* Ny, double* Nz
@@ -81,7 +78,7 @@ unsigned int getFractalIdx(AppState* appState, unsigned int x, unsigned int y)
   return appState->wMandel * y * 4 + x * 4;
 }
 
-void generate_fractal(AppState* appState, WorkQueueItem* workItem)
+void generateFractal(AppState* appState, WorkQueueItem* workItem)
 {
   unsigned int fractalIdx;
 
@@ -102,22 +99,17 @@ void generate_fractal(AppState* appState, WorkQueueItem* workItem)
   unsigned int By = workItem->By;
 
   appState->camera->get_P(&cam_Px, &cam_Py, &cam_Pz);
-  // appState->camera->cache__get_3d_point__constants(appState->wMandel, appState->hMandel);
-
-  // Index for our 1D fractal image array.
-  // fractalIdx = 0;
 
   for (y = Ay; y <= By; y += 1) {
-    // printf("y = %d (of %d)\n", y, appState->hMandel);
-    // usleep(1);
 
     for (x = Ax; x <= Bx; x += 1) {
-      // Thread cancellation point. When this function is called, the system
-      // checks if the thread running this function has been canceled. If so,
-      // the thread immediately exits.
-      rand();
+      if (appState->parallel->selfDestructing == true) {
+        return;
+      }
 
+      // Calculate fractal array 1D offset.
       fractalIdx = getFractalIdx(appState, x, y);
+
 
       // Calculate 3D point in image plane.
       appState->camera->get_3d_point(x, y, &Px, &Py, &Pz);
@@ -148,12 +140,12 @@ void generate_fractal(AppState* appState, WorkQueueItem* workItem)
 
 
         // Get normal vector for 3D point of fractal.
-        get_normal(appState, Px, Py, Pz, &Nx, &Ny, &Nz);
+        getNormal(appState, Px, Py, Pz, &Nx, &Ny, &Nz);
       }
 
 
       // Color our 2D pixel.
-      simple_color_scheme2(appState, totalDistance, fractalIdx, Nx, Ny, Nz);
+      simpleColorScheme2(appState, totalDistance, fractalIdx, Nx, Ny, Nz);
 
 
       // Increase fractal array index by 4 (because each 2D pixel is

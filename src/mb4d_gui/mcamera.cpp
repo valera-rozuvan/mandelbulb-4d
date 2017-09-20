@@ -5,6 +5,36 @@
 
 const double PI_ = 3.14159265358979323846;
 
+void MCamera::calculate_RIGHT(void) {
+  // Vector cross product.
+  this->RIGHTx = -1.0 * this->UPy * this->Lz + this->UPz * this->Ly;
+  this->RIGHTy = -1.0 * this->UPz * this->Lx + this->UPx * this->Lz;
+  this->RIGHTz = -1.0 * this->UPx * this->Ly + this->UPy * this->Lx;
+
+  normalize(&this->RIGHTx, &this->RIGHTy, &this->RIGHTz);
+}
+
+void MCamera::calculate_CIMGP(void) {
+  this->CIMGPx = this->Px + this->F * this->Lx;
+  this->CIMGPy = this->Py + this->F * this->Ly;
+  this->CIMGPz = this->Pz + this->F * this->Lz;
+}
+
+void MCamera::calculate_IMGP_dim(void) {
+  this->IMGP_width = 2.0 * this->F * tan(this->beta);
+  this->IMGP_height = 2.0 * this->F * tan(this->alfa);
+}
+
+void MCamera::caluclate_TL(void) {
+  this->TLx = this->CIMGPx + 0.5 * this->IMGP_height * this->UPx - 0.5 * this->IMGP_width * this->RIGHTx;
+  this->TLy = this->CIMGPy + 0.5 * this->IMGP_height * this->UPy - 0.5 * this->IMGP_width * this->RIGHTy;
+  this->TLz = this->CIMGPz + 0.5 * this->IMGP_height * this->UPz - 0.5 * this->IMGP_width * this->RIGHTz;
+}
+
+void MCamera::caluclate_AR(void) {
+  this->IMGP_AR = this->IMGP_width / this->IMGP_height;
+}
+
 void MCamera::set_P(double Px_, double Py_, double Pz_) {
   this->Px = Px_;
   this->Py = Py_;
@@ -71,68 +101,6 @@ void MCamera::set_beta(double beta_) {
   this->beta = (beta_ * PI_) / 180.0;
 }
 
-// Setting camera defaults on object instantiation.
-MCamera::MCamera(void) {
-  // Camera positioned at (0, 0, 0).
-  this->Px = 0.0;
-  this->Py = 0.0;
-  this->Pz = 0.0;
-
-  // Camera UP direction is along the z-axis.
-  this->UPx = 0.0;
-  this->UPy = 0.0;
-  this->UPz = 1.0;
-
-  // Camera is looking along the x-axis.
-  this->Lx = 1.0;
-  this->Ly = 0.0;
-  this->Lz = 0.0;
-
-  // Set distance from camera to image plane.
-  this->F = 5.0;
-
-  // Set both camera viewing angles.
-  this->alfa = (45.0 * PI_) / 180.0;
-  this->beta = (45.0 * PI_) / 180.0;
-
-  this->recalculate_internals();
-}
-
-MCamera::~MCamera()
-{
-  fprintf(stdout, "MCamera::~MCamera destructor.\n");
-}
-
-void MCamera::calculate_RIGHT(void) {
-  // Vector cross product.
-  this->RIGHTx = -1.0 * this->UPy * this->Lz + this->UPz * this->Ly;
-  this->RIGHTy = -1.0 * this->UPz * this->Lx + this->UPx * this->Lz;
-  this->RIGHTz = -1.0 * this->UPx * this->Ly + this->UPy * this->Lx;
-
-  normalize(&this->RIGHTx, &this->RIGHTy, &this->RIGHTz);
-}
-
-void MCamera::calculate_CIMGP(void) {
-  this->CIMGPx = this->Px + this->F * this->Lx;
-  this->CIMGPy = this->Py + this->F * this->Ly;
-  this->CIMGPz = this->Pz + this->F * this->Lz;
-}
-
-void MCamera::calculate_IMGP_dim(void) {
-  this->IMGP_width = 2.0 * this->F * tan(this->beta);
-  this->IMGP_height = 2.0 * this->F * tan(this->alfa);
-}
-
-void MCamera::caluclate_TL(void) {
-  this->TLx = this->CIMGPx + 0.5 * this->IMGP_height * this->UPx - 0.5 * this->IMGP_width * this->RIGHTx;
-  this->TLy = this->CIMGPy + 0.5 * this->IMGP_height * this->UPy - 0.5 * this->IMGP_width * this->RIGHTy;
-  this->TLz = this->CIMGPz + 0.5 * this->IMGP_height * this->UPz - 0.5 * this->IMGP_width * this->RIGHTz;
-}
-
-void MCamera::caluclate_AR(void) {
-  this->IMGP_AR = this->IMGP_width / this->IMGP_height;
-}
-
 void MCamera::recalculate_internals(void) {
   this->calculate_RIGHT();
   this->calculate_CIMGP();
@@ -184,4 +152,36 @@ void MCamera::get_P(double* Px_, double* Py_, double* Pz_) {
   *Px_ = this->Px;
   *Py_ = this->Py;
   *Pz_ = this->Pz;
+}
+
+// Setting camera defaults on object instantiation.
+MCamera::MCamera(void) {
+  // Camera positioned at (0, 0, 0).
+  this->Px = 0.0;
+  this->Py = 0.0;
+  this->Pz = 0.0;
+
+  // Camera UP direction is along the z-axis.
+  this->UPx = 0.0;
+  this->UPy = 0.0;
+  this->UPz = 1.0;
+
+  // Camera is looking along the x-axis.
+  this->Lx = 1.0;
+  this->Ly = 0.0;
+  this->Lz = 0.0;
+
+  // Set distance from camera to image plane.
+  this->F = 5.0;
+
+  // Set both camera viewing angles.
+  this->alfa = (45.0 * PI_) / 180.0;
+  this->beta = (45.0 * PI_) / 180.0;
+
+  this->recalculate_internals();
+}
+
+MCamera::~MCamera()
+{
+  fprintf(stdout, "MCamera::~MCamera destructor.\n");
 }

@@ -12,12 +12,10 @@ class Parallel {
     AppState* appState;
 
     pthread_t* startT;
-    pthread_t* stopT;
     pthread_t* workersT;
 
     bool startThreadRunning;
     bool workerThreadsRunning;
-    bool stopThreadRunning;
 
     unsigned int numThreads;
 
@@ -32,13 +30,15 @@ class Parallel {
 
     bool selfDestructing;
 
+    unsigned int generationBlockSize;
+
     void createStartThread(void);
     void startThreadCleanup(void);
 
     void createWorkers(void);
     void stopWorkers(void);
 
-    Parallel(AppState*, unsigned int);
+    Parallel(AppState*, unsigned int, unsigned int);
     ~Parallel(void);
 };
 

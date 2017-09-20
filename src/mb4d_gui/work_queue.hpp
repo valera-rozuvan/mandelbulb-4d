@@ -9,12 +9,12 @@ class WorkQueue {
     WorkQueueItem* workQueueItems;
   public:
     void initNewQueueItem(unsigned int, unsigned int, unsigned int, unsigned int);
-    void push_item(WorkQueueItem*);
+    void pushItem(WorkQueueItem*);
 
     void clearQueue(void);
 
-    WorkQueueItem* pop_nth_item(const unsigned int);
-    WorkQueueItem* pop_rnd_item(void);
+    WorkQueueItem* popNthItem(const unsigned int);
+    WorkQueueItem* popRndItem(void);
 
     WorkQueue(void);
     ~WorkQueue(void);

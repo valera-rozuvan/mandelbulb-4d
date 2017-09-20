@@ -3,8 +3,8 @@
 
 #include "app_state.hpp"
 
-double simple_mandelbulb_de(AppState*, double, double, double);
-double repeated_mandelbulb_de(AppState*, double, double, double);
-double simple_sphere_de(AppState*, double, double, double);
+double simpleMandelbulbDe(AppState*, double, double, double);
+double repeatedMandelbulbDe(AppState*, double, double, double);
+double simpleSphereDe(AppState*, double, double, double);
 
 #endif // DISTANCE_ESTIMATOR_HPP

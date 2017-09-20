@@ -8,9 +8,9 @@ AppState::AppState(const unsigned int wMandel_, const unsigned int hMandel_)
 {
   this->is_generating = false;
 
-  // this->DE = simple_sphere_de;
-  this->DE = &repeated_mandelbulb_de;
-  // this->DE = &simple_mandelbulb_de;
+  // this->DE = simpleSphereDe;
+  this->DE = &repeatedMandelbulbDe;
+  // this->DE = &simpleMandelbulbDe;
 
   // this->MaximumRaySteps = 320;
   // this->MinimumDistance = 0.001;
@@ -45,7 +45,7 @@ AppState::AppState(const unsigned int wMandel_, const unsigned int hMandel_)
   this->arrayMandel = (unsigned char *)calloc(sizeof(unsigned char) * this->wMandel * this->hMandel * 4, sizeof(unsigned char));
 
   this->camera = new MCamera();
-  this->parallel = new Parallel(this, 4);
+  this->parallel = new Parallel(this, 4, 85);
 
   // this->camera->set_Px(-2.0);
   // this->camera->set_Pz(5.5);
