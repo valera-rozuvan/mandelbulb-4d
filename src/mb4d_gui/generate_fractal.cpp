@@ -1,6 +1,6 @@
 #include <cstddef>
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
 #include "mcamera.hpp"
 #include "utils.hpp"
 #include "color.hpp"
@@ -109,9 +109,14 @@ void generate_fractal(AppState* appState, WorkQueueItem* workItem)
 
   for (y = Ay; y <= By; y += 1) {
     // printf("y = %d (of %d)\n", y, appState->hMandel);
-    usleep(1);
+    // usleep(1);
 
     for (x = Ax; x <= Bx; x += 1) {
+      // Thread cancellation point. When this function is called, the system
+      // checks if the thread running this function has been canceled. If so,
+      // the thread immediately exits.
+      rand();
+
       fractalIdx = getFractalIdx(appState, x, y);
 
       // Calculate 3D point in image plane.

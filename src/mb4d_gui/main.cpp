@@ -60,7 +60,7 @@ int main(void)
     fprintf(stderr, "OpenCL test failed.\n");
   }
 
-  appState = new AppState(1600, 1200);
+  appState = new AppState(800, 600);
 
   appState->parallel->createStartThread();
 

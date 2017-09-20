@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 #include "app_state.hpp"
 #include "parallel.hpp"
 #include "generate_fractal.hpp"
@@ -39,16 +40,51 @@ void* startThreadFunc(void* appState_)
 {
   AppState* appState = (AppState*)appState_;
 
+  const unsigned int block_size = 99;
+
   unsigned int i;
   unsigned int j;
 
-  for (i = 0; i < 16; i += 1) {
-    for (j = 0; j < 12; j += 1) {
+  unsigned int left_over_i;
+  unsigned int left_over_j;
+
+  unsigned int i_max_floor = floor(((double)appState->wMandel) / ((double)block_size));
+  unsigned int j_max_floor = floor(((double)appState->hMandel) / ((double)block_size));
+
+  for (i = 0; i < i_max_floor; i += 1) {
+    for (j = 0; j < j_max_floor; j += 1) {
       appState->parallel->todoWork->initNewQueueItem(
-        i * 100, i * 100 + 99,
-        j * 100, j * 100 + 99
+        i * block_size, block_size * (i + 1) - 1,
+        j * block_size, block_size * (j + 1) - 1
       );
     }
+  }
+
+  left_over_i = appState->wMandel - i_max_floor * block_size;
+  if (left_over_i > 0) {
+    for (j = 0; j < j_max_floor; j += 1) {
+      appState->parallel->todoWork->initNewQueueItem(
+        i_max_floor * block_size, i_max_floor * block_size + left_over_i  - 1,
+        j * block_size, block_size * (j + 1) - 1
+      );
+    }
+  }
+
+  left_over_j = appState->hMandel - j_max_floor * block_size;
+  if (left_over_j > 0) {
+    for (i = 0; i < i_max_floor; i += 1) {
+      appState->parallel->todoWork->initNewQueueItem(
+        i * block_size, block_size * (i + 1) - 1,
+        j_max_floor * block_size, j_max_floor * block_size + left_over_j  - 1
+      );
+    }
+  }
+
+  if ((left_over_i > 0) && (left_over_j > 0)) {
+    appState->parallel->todoWork->initNewQueueItem(
+      i_max_floor * block_size, i_max_floor * block_size + left_over_i  - 1,
+      j_max_floor * block_size, j_max_floor * block_size + left_over_j  - 1
+    );
   }
 
   appState->parallel->createWorkers();
