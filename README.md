@@ -22,7 +22,14 @@ This project was born from the discussion [Remake of MB3D](http://www.fractalfor
 Currently this is a work in progress. On windows, I build binaries using cmake and MinGW-64-bit (from RubenVB for
 [64-bit Windows target](http://sourceforge.net/projects/mingw-w64/files/Toolchains)). On Linux, I build using cmake and
 the GCC collection. On Mac OS, I build using cmake and the command line developer tools. Most libraries are included as
-part of the source. You only need to make sure you have OpenCL development files (headers) on your system.
+part of the source. You need to make sure you have OpenCL development files (headers) on your system.
+Also, on a Debian-based Linux distribution, you should install the following dependencies:
+
+```
+sudo apt-get install build-essential gcc g++ make automake autoconf cmake\
+  libgl1-mesa-dev ocl-icd-opencl-dev libglfw3-dev libxinerama-dev libxcursor-dev\
+  freeglut3-dev libboost-random-dev
+```
 
 Sample steps to build on Linux:
 
