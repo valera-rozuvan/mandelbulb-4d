@@ -49,7 +49,20 @@ Sample steps to build on Linux:
 
 Cheers!
 
+---
 
-## License
+## license
 
-This project is licensed under the MIT license. See [LICENSE](LICENSE) for more details.
+The project `'mandelbulb-4d'` is licensed under the MIT License.
+
+See [LICENSE](./LICENSE) for more details.
+
+The latest source code can be retrieved from one of several mirrors:
+
+1. [github.com/valera-rozuvan/mandelbulb-4d](https://github.com/valera-rozuvan/mandelbulb-4d)
+
+2. [gitlab.com/valera-rozuvan/mandelbulb-4d](https://gitlab.com/valera-rozuvan/mandelbulb-4d)
+
+3. [git.rozuvan.net/mandelbulb-4d](https://git.rozuvan.net/mandelbulb-4d)
+
+Copyright (c) 2016-2022 [Valera Rozuvan](https://valera.rozuvan.net/)
