@@ -1,5 +1,11 @@
 # mandelbulb-4d
 
+```text
+!! Work in progress !!
+
+a lot remains to be done
+```
+
 artistic tool for 3D fractal generation, including the Mandelbulb
 
 ## Introduction
