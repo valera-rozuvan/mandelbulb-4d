@@ -57,8 +57,8 @@ class MCamera {
     void calculate_RIGHT(void);
     void calculate_CIMGP(void);
     void calculate_IMGP_dim(void);
-    void caluclate_TL(void);
-    void caluclate_AR(void);
+    void calculate_TL(void);
+    void calculate_AR(void);
 
   public:
     void set_P(double, double, double);

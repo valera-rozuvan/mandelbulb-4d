@@ -25,13 +25,13 @@ void MCamera::calculate_IMGP_dim(void) {
   this->IMGP_height = 2.0 * this->F * tan(this->alfa);
 }
 
-void MCamera::caluclate_TL(void) {
+void MCamera::calculate_TL(void) {
   this->TLx = this->CIMGPx + 0.5 * this->IMGP_height * this->UPx - 0.5 * this->IMGP_width * this->RIGHTx;
   this->TLy = this->CIMGPy + 0.5 * this->IMGP_height * this->UPy - 0.5 * this->IMGP_width * this->RIGHTy;
   this->TLz = this->CIMGPz + 0.5 * this->IMGP_height * this->UPz - 0.5 * this->IMGP_width * this->RIGHTz;
 }
 
-void MCamera::caluclate_AR(void) {
+void MCamera::calculate_AR(void) {
   this->IMGP_AR = this->IMGP_width / this->IMGP_height;
 }
 
@@ -105,8 +105,8 @@ void MCamera::recalculate_internals(void) {
   this->calculate_RIGHT();
   this->calculate_CIMGP();
   this->calculate_IMGP_dim();
-  this->caluclate_TL();
-  this->caluclate_AR();
+  this->calculate_TL();
+  this->calculate_AR();
 }
 
 void MCamera::cache__get_3d_point__constants(unsigned int width, unsigned int height) {
