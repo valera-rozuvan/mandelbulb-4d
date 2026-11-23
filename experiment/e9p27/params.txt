@@ -1,0 +1,120 @@
+# 001
+./shpbr m1=0.03 m2=0.12 wa=3 wb=8 pn=7 a=2.2 cx=-2.815 cy=1.758 cz=-0.33 lx=0.296 ly=-0.237 lz=-0.082 fov=65 sx=-0.429 sy=1.03 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=001.png
+
+# 002
+./shpbr m1=0.03 m2=0.06 wa=1 wb=3 pn=3 cx=-2.196 cy=2.226 cz=-1.818 lx=0.867 ly=0 lz=0 fov=55 sx=-0.429 sy=1.030 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=002.png
+
+# 003
+./shpbr m1=0.005 m2=0.04 wa=1 wb=3 pn=3 cx=-2.774 cy=2.226 cz=-1.818 lx=0.289 ly=0 lz=0 fov=55 sx=-0.429 sy=1.030 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=003.png
+
+# 004
+./shpbr m1=0.005 m2=0.4 wa=1 wb=3 pn=3 cx=-8.774 cy=3.226 cz=-1.818 lx=0.289 ly=0 lz=0 fov=80 sx=-0.429 sy=1.030 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=004.png
+
+# 005
+./shpbr m1=0.0002 m2=0.8 wa=1 wb=3 pn=3 cx=-5.774 cy=-2.226 cz=-6.818 lx=2.289 ly=0 lz=0 fov=120 sx=-0.429 sy=1.030 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=005.png
+
+# 006
+./shpbr m1=0.01 m2=0.1 wa=1 wb=3 pn=3 cx=-2.529 cy=1.038 cz=-2.368 lx=-2.61 ly=-0.42 lz=0.299 fov=110 sx=-0.429 sy=1.03 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=006.png
+
+# 007
+./shpbr m1=0.5 m2=0.5 wa=1 wb=3 pn=3 cx=-3.658 cy=2.013 cz=-0.382 lx=0.422 ly=-0.389 lz=0.365 fov=95 sx=-0.429 sy=1.03 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=007.png
+
+# 008
+./shpbr m1=0.03 m2=0.2 wa=2 wb=6 pn=9 sa=1.4 cx=2.178 cy=-0.243 cz=3.816 lx=-0.138 ly=0.063 lz=-0.35 fov=55 sx=-0.05 sy=0.369 sz=0.928 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=008.png
+
+# 009
+./shpbr m1=0.03 m2=0.06 wa=1 wb=3 pn=2 cx=3.493 cy=-2.938 cz=-1.443 lx=1.232 ly=-1.032 lz=0.038 fov=77 sx=0.451 sy=-0.097 sz=-0.887 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=009.png
+
+# 010
+./shpbr m1=0.005 m2=0.4 wa=1 wb=3 pn=3 lapse=0 cx=5.207 cy=0.765 cz=-3.115 lx=-0.003843 ly=0.096 lz=-0.287 fov=46 sx=0.86 sy=0.501 sz=0.096 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=010.png
+
+# 011
+./shpbr m1=0.03 m2=0.003 wa=1 wb=0 pn=4 cx=0.267 cy=2.273 cz=-2.966 lx=-0.1 ly=0.57 lz=-0.086 fov=23 sx=0.547 sy=0.746 sz=-0.379 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=011.png
+
+# 012
+./shpbr m1=0.03 m2=0.09 wa=2 wb=6 pn=2 cx=-0.941 cy=0.692 cz=3.801 lx=-0.193 ly=-0.136 lz=-0.005227 fov=95 sx=0.359 sy=0.568 sz=0.74 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=012.png
+
+# 013
+./shpbr m1=0.08 m2=0.02 wa=1 wb=1 pn=3 cx=6.13 cy=-0.643 cz=-0.211 lx=1.894 ly=-0.128 lz=-0.056 fov=19 sx=0.824 sy=0.324 sz=0.465 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=013.png
+
+# 014
+./shpbr m1=0.01 m2=0.05 wa=1 wb=3 pn=3 a=2 phase=60 incl=30 cx=1.916 cy=0.204 cz=3.227 lx=0.607 ly=0.092 lz=0.401 fov=62 sx=0.763 sy=0.446 sz=0.469 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=014.png
+
+# 015
+./shpbr m1=0.04 m2=0.04 wa=1 wb=2.5 pn=2.5 a=1.8 cx=2.171 cy=0.408 cz=1.065 lx=-0.109 ly=0.266 lz=-0.114 fov=68 sx=0.882 sy=0.46 sz=-0.101 suni=3 px=1.655 py=0.579 pz=1.106 lampi=2.359 w=1600 h=900 aa=2 maxit=24 refl=1 out=015.png
+
+# 016
+./shpbr m1=0.01 m2=0.06 wa=1 wb=3 pn=3 bs=-1.5 cx=-3.387 cy=0.163 cz=-2.099 lx=-0.813 ly=0.319 lz=0.312 fov=70 sx=-0.23 sy=0.385 sz=-0.894 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=016.png
+
+# 017
+./shpbr m1=0.12 m2=0.04 wa=2 wb=6 pn=8 cx=3.536 cy=-0.558 cz=0.572 lx=1.629 ly=-0.217 lz=-0.006593 fov=21 sx=0.929 sy=0.284 sz=-0.235 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=017.png
+
+# 018
+./shpbr m1=0.01 m2=0.1 wa=1 wb=3 pn=4 bs=2.6 sb=0.2 minr2=0.1 cx=2.448 cy=2.182 cz=-1.74 lx=-0.597 ly=-0.159 lz=-0.65 fov=48 sx=0.183 sy=0.786 sz=-0.591 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=018.png
+
+# 019
+./shpbr m1=0.6 m2=0.05 wa=1 wb=3 pn=3 cx=3.346 cy=1.763 cz=0.074 lx=2.511 ly=0.133 lz=-0.284 fov=44 sx=0.2 sy=0.869 sz=-0.453 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=019.png
+
+# 020
+./shpbr m1=0.02 m2=0.1 wa=1 wb=2 pn=2 cx=5.379 cy=-0.949 cz=1.719 lx=0.781 ly=-0.251 lz=-0.07 fov=49 sx=0.578 sy=0.308 sz=0.756 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=020.png
+
+# 021
+./shpbr m1=0.03 m2=0.05 wa=1 wb=3 pn=4 a=2 e=0.6 phase=180 incl=40 cx=-2.172 cy=0.016 cz=0.576 lx=-1.377 ly=-0.392 lz=0.084 fov=63 sx=-0.429 sy=1.03 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=021.png
+
+# 022
+./shpbr m1=0.2 m2=0.2 wa=2 wb=6 pn=8 lapse=0 lens=2 cx=5.093 cy=2.393 cz=0.411 lx=2.402 ly=-0.623 lz=-0.048 fov=43 sx=0.281 sy=0.846 sz=-0.454 lampi=0 expo=1.4 w=1600 h=900 aa=2 maxit=24 refl=1 out=022.png
+
+# 023
+./shpbr m1=0.02 m2=0.06 wa=1 wb=2 pn=2.5 cx=3.063 cy=0.7 cz=-0.475 lx=-0.341 ly=1.035 lz=-0.179 fov=42 sx=0.838 sy=0.342 sz=0.424 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=023.png
+
+# 024
+./shpbr m1=0.06 m2=0.02 wa=1 wb=2 pn=2 cx=2.135 cy=-0.734 cz=0.552 lx=1.824 ly=0.453 lz=-0.52 fov=105 sx=-0.245 sy=-0.268 sz=0.932 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=024.png
+
+# 025
+./shpbr m1=0.02 m2=0.2 wa=2 wb=6 pn=8 cx=-0.468 cy=2.022 cz=-0.959 lx=-1.365 ly=0.409 lz=-0.925 fov=66 sx=-0.429 sy=1.03 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=025.png
+
+# 026
+./shpbr m1=0.03 m2=0.06 wa=1 wb=3 pn=3 a=2.2 phase=90 incl=90 cx=-1.517 cy=0.936 cz=-1.89 lx=-0.111 ly=0.578 lz=-0.176 fov=84 sx=-0.429 sy=1.03 sz=-0.233 suni=3 px=-0.435 py=1.205 pz=-1.503 lampi=11.074 w=1600 h=900 aa=2 maxit=24 refl=1 out=026.png
+
+# 027
+./shpbr m1=0.01 m2=0.05 wa=1 wb=3 pn=2 bs=-2.5 sb=0.2 minr2=0.1 cx=0.172 cy=-1.13 cz=-1.956 lx=-0.119 ly=-0.313 lz=0.373 fov=56 sx=0.597 sy=0.145 sz=-0.789 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=027.png
+
+# 028
+./shpbr m1=0.05 m2=0.02 wa=1 wb=2 pn=6 cx=1.24 cy=-1.381 cz=-0.59 lx=0.35 ly=-0.275 lz=-0.376 fov=25 sx=0.67 sy=-0.32 sz=-0.67 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=028.png
+
+# 029
+./shpbr m1=0.01 m2=0.08 wa=1 wb=3 pn=2 bs=-1.5 sb=0.35 cx=-3.101 cy=2.445 cz=-1.405 lx=0.296 ly=-0.509 lz=0.388 fov=56 sx=-0.429 sy=1.03 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=029.png
+
+# 030
+./shpbr m1=0.06 m2=0.04 wa=2 wb=6 pn=6 a=3.2 sa=1.8 cx=5.852 cy=-2.354 cz=-1.107 lx=1.138 ly=0.015 lz=-0.388 fov=33 sx=0.784 sy=0.036 sz=-0.62 px=4.659 py=-0.63 pz=0.378 lampi=26.226 w=1600 h=900 aa=2 maxit=24 refl=1 out=030.png
+
+# 031
+./shpbr m1=0.08 m2=0.08 wa=2 wb=6 pn=8 lens=3 cx=1.785 cy=0.858 cz=0.453 lx=1.18 ly=-0.126 lz=-0.064 fov=104 sx=-0.205 sy=0.855 sz=0.476 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=031.png
+
+# 032
+./shpbr m1=0.01 m2=0.1 wa=1 wb=3 pn=3 cx=3.713 cy=0.883 cz=-1.909 lx=0.59 ly=-0.101 lz=-0.101 fov=57 sx=0.292 sy=0.604 sz=-0.741 lampi=0 w=1600 h=900 aa=2 maxit=10 refl=1 out=032.png
+
+# 033
+./shpbr m1=0.04 m2=0.04 wa=2 wb=6 pn=8 epsw=0.0001 cx=-0.206 cy=-0.121 cz=0.235 lx=1.462 ly=0.023 lz=-0.101 fov=25 sx=-0.681 sy=0.353 sz=0.642 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=033.png
+
+# 034
+./shpbr m1=0.01 m2=0.2 wa=0.5 wb=2 pn=4 cx=0.511 cy=1.228 cz=-0.452 lx=-0.407 ly=0.41 lz=-0.094 fov=102 sx=-0.429 sy=1.03 sz=-0.233 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=034.png
+
+# 035
+./shpbr m1=0.04 m2=0.04 wa=2 wb=6 pn=8 a=1.4 phase=90 incl=90 cx=-1.314 cy=1.388 cz=1.259 lx=0.727 ly=-0.732 lz=0.629 fov=28 sx=-0.089 sy=0.834 sz=0.545 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=035.png
+
+# 036
+./shpbr m1=0.04 m2=0.16 wa=2 wb=6 pn=8 cx=0.117 cy=-0.412 cz=-1.589 lx=-0.972 ly=0.502 lz=-0.232 fov=90 sx=-0.454 sy=0.251 sz=-0.855 suni=3 px=0.147 py=-0.061 pz=-1.215 lampi=2.099 w=1600 h=900 aa=2 maxit=24 refl=1 out=036.png
+
+# 037
+./shpbr m1=0.03 m2=0.09 wa=2 wb=6 pn=2 bs=-1.5 sb=0.3 cx=-4.164 cy=-2.586 cz=-0.14 lx=0.304 ly=-0.417 lz=-0.148 fov=86 sx=-0.867 sy=0.044 sz=0.496 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=037.png
+
+# 038
+./shpbr m1=0.02 m2=0.1 wa=0.5 wb=5 pn=3 cx=-2.131 cy=0.102 cz=-1.528 lx=-0.504 ly=0.098 lz=-0.458 fov=72 sx=-0.363 sy=0.42 sz=-0.831 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=038.png
+
+# 039
+./shpbr m1=0.02 m2=0.1 wa=1 wb=2 pn=2 a=3.4 cx=6.24 cy=-4.455 cz=-1.346 lx=0.973 ly=-0.428 lz=-0.336 fov=38 sx=0.752 sy=-0.122 sz=-0.648 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=039.png
+
+# 040
+./shpbr m1=0.04 m2=0.08 wa=2 wb=6 pn=8 bs=2.5 sb=0.3 cx=0.828 cy=-0.472 cz=1.552 lx=0.12 ly=-0.179 lz=-0.658 fov=56 sx=-0.225 sy=0.32 sz=0.92 lampi=0 w=1600 h=900 aa=2 maxit=24 refl=1 out=040.png
+
